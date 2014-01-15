@@ -1,0 +1,16 @@
+application: cse-480
+version: 1
+runtime: python27
+threadsafe: true
+api_version 1
+
+handlers:
+# Endpoints hander
+-url: /_ah/spi/.*
+script: cse-480_api.APPLICATION
+
+libraries:
+-name: pycrypto
+version: latest
+-name: endpoints
+version: 1.0
