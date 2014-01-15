@@ -27,3 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+
+#app engine generated files
+*.pyc

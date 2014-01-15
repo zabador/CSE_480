@@ -10,23 +10,27 @@ from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
+
 package = 'Hello'
 
+
 class Greeting(messages.Message):
-	"""Greeting that stores a message."""
-	message = messages.StringField(1)
+    """Greeting that stores a message."""
+    message = messages.StringField(1)
 
 
 class GreetingCollection(messages.Message):
-	"""Collection of Greetings."""
-	items = messages.MessageField(Greeting, 1, repeated=True)
+    """Collection of Greetings."""
+    items = messages.MessageField(Greeting, 1, repeated=True)
+
 
 STORED_GREETINGS = GreetingCollection(items=[
-	Greeting(message='hello world'),
-	Greeting(message='goodbye world'),
+    Greeting(message='hello world!'),
+    Greeting(message='goodbye world!'),
 ])
 
-@endpoints.api(name='cse-480', version='v1')
+
+@endpoints.api(name='endpoints', version='v1')
 class HelloWorldApi(remote.Service):
     """Helloworld API v1."""
 
@@ -51,4 +55,3 @@ class HelloWorldApi(remote.Service):
                                               (request.id,))
 
 APPLICATION = endpoints.api_server([HelloWorldApi])
-
