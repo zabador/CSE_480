@@ -22,22 +22,38 @@ import java.net.URISyntaxException;
 public class MainActivity extends Activity
 {
 	TextView messageLabel;
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 		messageLabel = (TextView)findViewById(R.id.messageLabel);
-    }
-
+	}
+	/** 
+	 * This method which is called from the button press 
+	 * to send a GET request to the server and handle the response
+	 * 
+	 * @param view The button that is pressed that calls this method
+	 *
+	 */
 	public void getMessage(View view) {
 
+		/***************************************************************************************************
+		 *
+		 * This is not the final way we are going to do this. We will use the correct way of using endpoints.
+		 * This was just a test to see if I could communicate with the server and get a response
+		 *
+		 ****************************************************************************************************
+		 */
 		HttpResponse response = null;
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpGet request = new HttpGet();
+
+			// the 0 at the end can be changed to a 1 or a 2 to get a different message
 			request.setURI(new URI("https://cse-480.appspot.com/_ah/api/endpoints/v1/hellogreeting/0"));
+
 			response = client.execute(request);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -47,6 +63,7 @@ public class MainActivity extends Activity
 			e.printStackTrace();
 		}
 
+		// convert the response to a string and set the text on the textview to it
 		try {
 			HttpEntity entity = response.getEntity();
 			InputStream is = entity.getContent();
@@ -56,6 +73,13 @@ public class MainActivity extends Activity
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * This method that will take the input stream from the HttpResponse and 
+	 * convert it into a string
+	 *
+	 * @param is The inputStream that will be converted to a string and returned
+	 * @return String The string representation of the InputStream
+	 */
 
 	private static String convertStreamToString(InputStream is) {
 
