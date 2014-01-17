@@ -7,7 +7,7 @@ api_version: 1
 handlers:
 # Endpoints hander
 - url: /_ah/spi/.*
-  script: cse-480_api.APPLICATION
+  script: cse480_api.APPLICATION
 
 libraries:
 - name: pycrypto
