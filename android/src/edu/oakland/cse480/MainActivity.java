@@ -53,7 +53,7 @@ public class MainActivity extends Activity
 			HttpGet request = new HttpGet();
 
 			// the 0 at the end can be changed to a 1 or a 2 to get a different message
-			request.setURI(new URI("https://cse-480.appspot.com/_ah/api/endpoints/v1/hellogreeting/0"));
+			request.setURI(new URI("https://cse-480.appspot.com/_ah/api/endpoints/v1/hellogreeting/3"));
 
 			response = client.execute(request);
 		} catch (URISyntaxException e) {

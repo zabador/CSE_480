@@ -26,6 +26,8 @@ class GreetingCollection(messages.Message):
 STORED_GREETINGS = GreetingCollection(items=[
     Greeting(message='hello world!'),
     Greeting(message='goodbye world!'),
+    Greeting(message='Dave Rocks'),
+    Greeting(message='kdfjakdjfasdjfkjds Rocks'),
 ])
 
 
