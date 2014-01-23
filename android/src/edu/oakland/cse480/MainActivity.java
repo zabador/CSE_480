@@ -29,7 +29,7 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		messageLabel = (TextView)findViewById(R.id.messageLabel);
+		message = (TextView)findViewById(R.id.messageLabel);
 	}
 	/** 
 	 * This method which is called from the button press 
