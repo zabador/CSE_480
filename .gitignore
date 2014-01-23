@@ -29,4 +29,4 @@ proguard/
 #app engine generated files
 *.pyc
 
-
+.metadata
