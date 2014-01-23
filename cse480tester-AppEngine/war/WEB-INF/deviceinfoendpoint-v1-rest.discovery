@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/lTOLWUlMjI8MQQIYMFhSstGAAWM\"",
+ "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/0AGRkwT_rFnnwcmWccXpSLAmInU\"",
  "discoveryVersion": "v1",
  "id": "deviceinfoendpoint:v1",
  "name": "deviceinfoendpoint",
@@ -14,9 +14,9 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://cse480tester.appspot.com/_ah/api/deviceinfoendpoint/v1/",
+ "baseUrl": "https://myapp.appspot.com/_ah/api/deviceinfoendpoint/v1/",
  "basePath": "/_ah/api/deviceinfoendpoint/v1/",
- "rootUrl": "https://cse480tester.appspot.com/_ah/api/",
+ "rootUrl": "https://myapp.appspot.com/_ah/api/",
  "servicePath": "deviceinfoendpoint/v1/",
  "batchPath": "batch",
  "parameters": {

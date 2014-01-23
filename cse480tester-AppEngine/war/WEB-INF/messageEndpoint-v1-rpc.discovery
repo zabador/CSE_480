@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/cPwLBTjL-QmJaliAnlYCWlb6SLg\"",
+ "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/qXKD0T5q9Ej-kQvK-jKMJX-61cg\"",
  "discoveryVersion": "v1",
  "id": "messageEndpoint:v1",
  "name": "messageEndpoint",
@@ -14,8 +14,8 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rpc",
- "rootUrl": "https://cse480tester.appspot.com/_ah/api/",
- "rpcUrl": "https://cse480tester.appspot.com/_ah/api/rpc",
+ "rootUrl": "https://myapp.appspot.com/_ah/api/",
+ "rpcUrl": "https://myapp.appspot.com/_ah/api/rpc",
  "rpcPath": "/_ah/api/rpc",
  "parameters": {
   "alt": {
