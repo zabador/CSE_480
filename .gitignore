@@ -7,8 +7,6 @@
 
 # Java class files
 *.class
-*.jar.*
-*.jar
 
 # generated files
 bin/
@@ -36,4 +34,3 @@ proguard/
 *.pyc
 
 .metadata
-cse480tester/endpoint-libs/
