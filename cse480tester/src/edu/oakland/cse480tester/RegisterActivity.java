@@ -2,14 +2,6 @@ package edu.oakland.cse480tester;
 
 import java.io.IOException;
 
-import edu.oakland.cse480tester.messageEndpoint.MessageEndpoint;
-import edu.oakland.cse480tester.messageEndpoint.model.CollectionResponseMessageData;
-import edu.oakland.cse480tester.messageEndpoint.model.MessageData;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.jackson.JacksonFactory;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,6 +14,15 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.json.jackson.JacksonFactory;
+
+import edu.oakland.cse480tester.messageEndpoint.MessageEndpoint;
+import edu.oakland.cse480tester.messageEndpoint.model.CollectionResponseMessageData;
+import edu.oakland.cse480tester.messageEndpoint.model.MessageData;
 
 /**
  * An activity that communicates with your App Engine backend via Cloud
