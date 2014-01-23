@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/qXKD0T5q9Ej-kQvK-jKMJX-61cg\"",
+ "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/cPwLBTjL-QmJaliAnlYCWlb6SLg\"",
  "discoveryVersion": "v1",
  "id": "messageEndpoint:v1",
  "name": "messageEndpoint",

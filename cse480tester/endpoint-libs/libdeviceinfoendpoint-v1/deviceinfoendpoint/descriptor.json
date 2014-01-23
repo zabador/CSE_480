@@ -1,13 +1,13 @@
 {
   "files": [
     {
-      "downloadUrl": "/downloads/deviceinfoendpoint/v1/20140123162034/java/1.16.0-rc/oakland.edu-deviceinfoendpoint-v1-20140123162034-java-1.16.0-rc-sources.jar", 
-      "path": "oakland.edu-deviceinfoendpoint-v1-20140123162034-java-1.16.0-rc-sources.jar", 
+      "downloadUrl": "/downloads/deviceinfoendpoint/v1/20140123165839/java/1.16.0-rc/oakland.edu-deviceinfoendpoint-v1-20140123165839-java-1.16.0-rc-sources.jar", 
+      "path": "oakland.edu-deviceinfoendpoint-v1-20140123165839-java-1.16.0-rc-sources.jar", 
       "type": "source", 
-      "timestamp": "2014-01-23 16:20"
+      "timestamp": "2014-01-23 16:58"
     }, 
     {
-      "path": "oakland.edu-deviceinfoendpoint-v1-20140123162034-java-1.16.0-rc.jar.properties", 
+      "path": "oakland.edu-deviceinfoendpoint-v1-20140123165839-java-1.16.0-rc.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -702,5 +702,5 @@
   "packagePath": "cse480tester", 
   "language_version": "1.16.0-rc", 
   "id": "deviceinfoendpoint:v1", 
-  "revision": 20140123162034
+  "revision": 20140123165839
 }
