@@ -62,6 +62,7 @@ public class CloudEndpointUtils {
     if (LOCAL_ANDROID_RUN) {
       builder.setRootUrl(LOCAL_APP_ENGINE_SERVER_URL_FOR_ANDROID
           + "/_ah/api/");
+      // comment to test git
     }
 
     // only enable GZip when connecting to remote server
