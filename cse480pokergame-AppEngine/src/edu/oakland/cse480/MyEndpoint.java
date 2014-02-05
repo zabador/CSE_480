@@ -34,7 +34,7 @@ public class MyEndpoint {
 			return new MyResult("HELLO " + req.getMessage());
 		}
 		else {
-			return new MyResult("Hello " + user.getEmail()):
+			return new MyResult("Hello " + user.getEmail());
 		}
 	}
 }

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/QkR3msyUQhZKriL1FfVqEob8y4o\"",
+ "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/yYp0zOs2IjWpUP93Nw0Xqh5snpY\"",
  "discoveryVersion": "v1",
  "id": "myendpoint:v1",
  "name": "myendpoint",
@@ -11,9 +11,9 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://cse480tester.appspot.com/_ah/api/myendpoint/v1/",
+ "baseUrl": "https://cse480poker.appspot.com/_ah/api/myendpoint/v1/",
  "basePath": "/_ah/api/myendpoint/v1/",
- "rootUrl": "https://cse480tester.appspot.com/_ah/api/",
+ "rootUrl": "https://cse480poker.appspot.com/_ah/api/",
  "servicePath": "myendpoint/v1/",
  "batchPath": "batch",
  "parameters": {
@@ -66,6 +66,9 @@
    "scopes": {
     "https://www.googleapis.com/auth/userinfo.email": {
      "description": "View your email address"
+    },
+    "https://www.googleapis.com/auth/userinfo.profile": {
+     "description": "View basic information about your account"
     }
    }
   }
@@ -106,7 +109,8 @@
     "$ref": "MyResult"
    },
    "scopes": [
-    "https://www.googleapis.com/auth/userinfo.email"
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile"
    ]
   }
  }

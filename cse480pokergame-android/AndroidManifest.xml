@@ -45,6 +45,8 @@
             android:name="edu.oakland.cse480.Gameplay"
             android:label="@string/title_activity_gameplay" >
         </activity>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     </application>
+    
 
 </manifest>

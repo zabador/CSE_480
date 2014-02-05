@@ -44,7 +44,7 @@ public class Gameplay extends Activity {
     private GoogleAccountCredential credential;
 
     static final int REQUEST_ACCOUNT_PICKER = 2;
-    static final String WEB_CLIENT_ID = "442435041673-q91q0oafp33tqe0p5nt1tsdhe2up0k7a.apps.googleusercontent.com";
+    static final String WEB_CLIENT_ID = "442435041673.apps.googleusercontent.com";
 	
 
 	@Override
