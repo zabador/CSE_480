@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:versionCode="1" 
 	android:versionName="1.0" 
-	package="edu.oakland.cse480tester">
+	package="edu.oakland.cse480">
 
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
 	<uses-permission android:name="android.permission.INTERNET"/>
-   <permission android:name="edu.oakland.cse480tester.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+   <permission android:name="edu.oakland.cse480.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
 
-   <uses-permission android:name="edu.oakland.cse480tester.permission.C2D_MESSAGE"/>
+   <uses-permission android:name="edu.oakland.cse480.permission.C2D_MESSAGE"/>
    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
    <uses-permission android:name="android.permission.WAKE_LOCK"/>
    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="edu.oakland.cse480tester.GameLobby"
+            android:name="edu.oakland.cse480.GameLobby"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,16 +33,16 @@
         <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="edu.oakland.cse480tester"/>
+                <category android:name="edu.oakland.cse480"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-                <category android:name="edu.oakland.cse480tester"/>
+                <category android:name="edu.oakland.cse480"/>
             </intent-filter>
         </receiver>
         
         <activity
-            android:name="edu.oakland.cse480tester.Gameplay"
+            android:name="edu.oakland.cse480.Gameplay"
             android:label="@string/title_activity_gameplay" >
         </activity>
     </application>

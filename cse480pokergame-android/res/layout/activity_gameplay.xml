@@ -175,6 +175,16 @@
         android:text="@string/lblPlayer3"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/generatecard"
+        android:layout_centerVertical="true"
+        android:text="testing"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <Button
         android:id="@+id/generatecard"
         android:layout_width="wrap_content"
@@ -182,7 +192,6 @@
         android:layout_above="@+id/txtPlayerMe"
         android:layout_alignParentRight="true"
         android:gravity="left"
-        android:onClick="generateCards"
         android:text="@string/btngenerateCards" />
 
     <TextView
