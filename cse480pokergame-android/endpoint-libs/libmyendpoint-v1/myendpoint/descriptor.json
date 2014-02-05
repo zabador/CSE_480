@@ -1,13 +1,13 @@
 {
   "files": [
     {
-      "downloadUrl": "/downloads/myendpoint/v1/20140205192947/java/1.16.0-rc/cse480tester_appspot_com-myendpoint-v1-20140205192947-java-1.16.0-rc-sources.jar", 
-      "path": "cse480tester_appspot_com-myendpoint-v1-20140205192947-java-1.16.0-rc-sources.jar", 
+      "downloadUrl": "/downloads/myendpoint/v1/20140205201532/java/1.16.0-rc/cse480tester_appspot_com-myendpoint-v1-20140205201532-java-1.16.0-rc-sources.jar", 
+      "path": "cse480tester_appspot_com-myendpoint-v1-20140205201532-java-1.16.0-rc-sources.jar", 
       "type": "source", 
-      "timestamp": "2014-02-05 19:29"
+      "timestamp": "2014-02-05 20:15"
     }, 
     {
-      "path": "cse480tester_appspot_com-myendpoint-v1-20140205192947-java-1.16.0-rc.jar.properties", 
+      "path": "cse480tester_appspot_com-myendpoint-v1-20140205201532-java-1.16.0-rc.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -701,5 +701,5 @@
   "version": "v1", 
   "language_version": "1.16.0-rc", 
   "id": "myendpoint:v1", 
-  "revision": 20140205192947
+  "revision": 20140205201532
 }

@@ -1,4 +1,4 @@
-package edu.oakland.cse480;
+package edu.oakland.cse480tester;
 
 import android.os.Bundle;
 import android.app.Activity;

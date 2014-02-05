@@ -1,4 +1,4 @@
-package edu.oakland.cse480;
+package edu.oakland.cse480tester;
 
 import java.util.Random;
 
