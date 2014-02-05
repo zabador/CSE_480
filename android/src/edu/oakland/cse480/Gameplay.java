@@ -4,8 +4,13 @@ import java.util.Random;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.text.Editable;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +21,8 @@ public class Gameplay extends Activity {
 	public TextView showBet;
 	public TextView nmP1, nmP2, nmP3, nmP4;
 	public TextView B1, B2, B3, B4;
+	private String betText = "";
+	public int intBet = 0;
 	
 
 	@Override
@@ -43,26 +50,32 @@ public class Gameplay extends Activity {
 	public void paintPlayers(int CurrentTurn, int SMblind, int BGblind, String strPlayerMe, String strplayer1, String strplayer2, String strplayer3){
 		nmP1 = (TextView) findViewById(R.id.txtPlayer1);
 		nmP1.setText(strplayer1);
+		
 		nmP2 = (TextView) findViewById(R.id.txtPlayer2);
 		nmP2.setText(strplayer2);
+		
 		nmP3 = (TextView) findViewById(R.id.txtPlayer3);
 		nmP3.setText(strplayer3);
+		
 		nmP4 = (TextView) findViewById(R.id.txtPlayerMe);
 		nmP4.setText(strPlayerMe);
-		
+		//need a loop
+		//No loop. Function and call it a few times. 
+		for (int i = 0; i <4; i++){
 		switch(CurrentTurn){
 			case 1:
-				nmP1.setText(strplayer1 + " turn");
+				nmP1.setText(strplayer1 + "s turn");
 				break;
 			case 2:
-				nmP2.setText(strplayer2 + " turn");
+				nmP2.setText(strplayer2 + "s turn");
 				break;
 			case 3:
-				nmP3.setText(strplayer3 + " turn");
+				nmP3.setText(strplayer3 + "s turn");
 				break;
 			case 4:
-				nmP4.setText(strPlayerMe + "turn");
+				nmP4.setText(strPlayerMe + "s turn");
 				break;
+		}
 		}
 		B1 = (TextView) findViewById(R.id.lblPlayer1Blind);
 		B2 = (TextView) findViewById(R.id.lblPlayer2Blind);
@@ -71,29 +84,45 @@ public class Gameplay extends Activity {
 		switch(SMblind){
 		case 1:
 			B1.setText("Small Blind");
+			B2.setText("Not Blind");
+			B3.setText("Not Blind");
+			B4.setText("Not Blind");
 			break;
 		case 2:
 			B2.setText("Small Blind");
+			B3.setText("Not Blind");
+			B4.setText("Not Blind");
+			B1.setText("Not Blind");
 			break;
 		case 3:
 			B3.setText("Small Blind");
+			B2.setText("Not Blind");
+			B1.setText("Not Blind");
+			B4.setText("Not Blind");
 			break;
 		case 4:
 			B4.setText("Small Blind");
+			B2.setText("Not Blind");
+			B3.setText("Not Blind");
+			B1.setText("Not Blind");
 			break;
 		}
 		switch(BGblind){
 		case 1:
 			B1.setText("Big Blind");
+		
 			break;
 		case 2:
 			B2.setText("Big Blind");
+		
 			break;
 		case 3:
 			B3.setText("Big Blind");
+			
 			break;
 		case 4:
 			B4.setText("Big Blind");
+		
 			break;
 		}
 		
@@ -106,15 +135,48 @@ public class Gameplay extends Activity {
 		int i3=r.nextInt(52-1) + 1;
 		int i4=r.nextInt(52-1) + 1;
 		int i5=r.nextInt(52-1) + 1;
-		paintPlayers(1, 2, 3, "Geoff", "Tara", "Mike", "Jon");
+		int i6=r.nextInt(5-1) + 1;
+		int i7=r.nextInt(5-1) + 1;
+		int i8=r.nextInt(5-1) + 1;
+		paintPlayers(i6, i7, i8, "Geoff", "Tara", "Mike", "Jon");
 			
 		myHand(i1, i2);
 		tableCards(i1,i2,i3,i4,i5);
+		showBet(intBet);
 		//Substitute values of 0 into the calls. It defaults to the ic_launcher image
 	}
 	
 	public void clickedBet(View view){
 		//For now, do nothing. Eventually a prompt box
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Enter your bid");
+
+		// Set up the input
+		final EditText input = new EditText(this);
+		// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+		input.setInputType(InputType.TYPE_CLASS_NUMBER);
+		builder.setView(input);
+
+		// Set up the buttons
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { 
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        betText = input.getText().toString();
+		        try {
+		            intBet = Integer.parseInt(betText);
+		        } catch(NumberFormatException nfe) {
+
+		        } 
+		    }
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        dialog.cancel();
+		    }
+		});
+
+		builder.show();
 	}
 	public void clickedFold(View view){
 		//Skye you'll need to enter your fold info in here
