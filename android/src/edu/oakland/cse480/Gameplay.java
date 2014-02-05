@@ -1,4 +1,4 @@
-package edu.Oakland.CIT480.pokergame;
+package edu.oakland.cse480;
 
 import java.util.Random;
 

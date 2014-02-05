@@ -1,4 +1,4 @@
-package edu.Oakland.CIT480.pokergame;
+package edu.oakland.cse480;
 
 import android.os.Bundle;
 import android.app.Activity;

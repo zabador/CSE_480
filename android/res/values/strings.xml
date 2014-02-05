@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MainActivity</string>
+
+    <string name="app_name">Poker Game</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="joinGamestring">Join game</string>
+    <string name="title_activity_gameplay">Gameplay</string>
+    <string name="card2descrip">Spot for card 2</string>
+    <string name="card1descrip">Spot for card 1</string>
+    <string name="btngenerateCards">Generate Cards</string>
+    <string name="lblYourhand">Your Hand</string>
+    <string name="strBetbtn">Bet</string>
+    <string name="lblCurrentBet">"Current Bet: "</string>
+    <string name="strFold">Fold</string>
+    <string name="lblPlayer1">Player 1</string>
+    <string name="lblPlayer2">Player 2</string>
+    <string name="lblPlayer3">Player 3</string>
+    <string name="lblNotBlind">Not Blind</string>
+    <string name="lblPlayerMe">Not your turn</string>
+
 </resources>
