@@ -5,8 +5,8 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <groupId>edu.oakland.cse480poker</groupId>
-    <artifactId>cse480poker</artifactId>
+    <groupId>edu.oakland.testmavenagain</groupId>
+    <artifactId>testmavenagain</artifactId>
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
@@ -25,6 +25,11 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-endpoints</artifactId>
 			<version>${appengine.target.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0</version>
 		</dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

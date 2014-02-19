@@ -7,10 +7,9 @@ import java.util.Random;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.jackson.JacksonFactory;
-
-import com.appspot.cse480tester.myendpoint.Myendpoint;
-import com.appspot.cse480tester.myendpoint.model.MyRequest;
-import com.appspot.cse480tester.myendpoint.model.MyResult;
+import com.appspot.testmavenagain.myendpoint.Myendpoint;
+import com.appspot.testmavenagain.myendpoint.model.MyRequest;
+import com.appspot.testmavenagain.myendpoint.model.MyResult;
 
 
 import android.os.AsyncTask;
@@ -29,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Log;
 
 public class Gameplay extends Activity {
 	public ImageView card1;
@@ -44,7 +44,7 @@ public class Gameplay extends Activity {
     private GoogleAccountCredential credential;
 
     static final int REQUEST_ACCOUNT_PICKER = 2;
-    static final String WEB_CLIENT_ID = "442435041673.apps.googleusercontent.com";
+    static final String WEB_CLIENT_ID = "699958132030-a9n9sl6hj6ogj139u15hdn0ci002if2n.apps.googleusercontent.com";
 	
 
 	@Override
@@ -66,6 +66,7 @@ public class Gameplay extends Activity {
         Button button = (Button) findViewById(R.id.generatecard);
         button.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+				Log.d("account name is ", credential.getSelectedAccountName());
                 new DoSomethingAsync(this, endpoint).execute();
                 Random r = new Random();
         		int i1=r.nextInt(52-1) + 1;
@@ -486,6 +487,7 @@ public class Gameplay extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 				MyResult r = new MyResult();
+				Log.e("error = ", e.getMessage(), e);
 				r.setValue("EXCEPTION");
 				return r;
 			}
