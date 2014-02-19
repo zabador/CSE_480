@@ -30,8 +30,9 @@ public class MyEndpoint {
 				"https://www.googleapis.com/auth/userinfo.email",
 				"https://www.googleapis.com/auth/userinfo.profile" })
 		public MyResult compute(MyRequest req, User user) {
-			Entity regId = new Entity("GCMDeviceIds", req.getMessage());
-			regId.setProperty("regid", req.getMessage());
+			Entity regId = new Entity("GCMDeviceIds", user.getEmail());
+			regId.setProperty("regid", "testing");
+			regId.setProperty("name", "skye");
 			log.severe("CALLING");
 			if (user == null) {
 				return new MyResult("HELLO " + req.getMessage());
@@ -39,14 +40,14 @@ public class MyEndpoint {
 				datastore.put(regId);
 				log.info("user  " + user.getUserId());
 				Entity entity = null;
-				Key keyRegId = KeyFactory.createKey("GCMDeviceIds", req.getMessage());
+				Key keyRegId = KeyFactory.createKey("GCMDeviceIds", user.getEmail());
 				try {
 					entity = datastore.get(keyRegId);
 				}catch(EntityNotFoundException e) {
 					e.printStackTrace();
 				}
 
-				return new MyResult(user.getEmail() + " sent " + entity.getKey().getName());
+				return new MyResult(user.getEmail() + " sent " + entity.getProperty("name"));
 			}
 		}
 }
