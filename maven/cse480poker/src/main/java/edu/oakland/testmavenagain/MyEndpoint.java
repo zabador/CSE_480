@@ -14,7 +14,7 @@ public class MyEndpoint {
 	private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
 
 	@ApiMethod(name = "compute",
-			clientIds = {Ids.WEB_CLIENT_ID, Ids.ANDROID_CLIENT_ID, API_EXPLORER_CLIENT_ID },
+			clientIds = {Ids.WEB_CLIENT_ID, Ids.ANDROID_CLIENT_ID, Ids.BRANDON_CLIENT_ID, API_EXPLORER_CLIENT_ID },
 			audiences = {Ids.WEB_CLIENT_ID },
 			scopes = {
 				"https://www.googleapis.com/auth/userinfo.email",
