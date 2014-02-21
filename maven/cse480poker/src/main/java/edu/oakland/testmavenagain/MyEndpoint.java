@@ -1,5 +1,8 @@
 package edu.oakland.testmavenagain;
 
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -14,9 +17,13 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 
+
 import static com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID;
 
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.IOException;
 
 @Api(name = "myendpoint")
 public class MyEndpoint {
@@ -31,8 +38,7 @@ public class MyEndpoint {
 				"https://www.googleapis.com/auth/userinfo.profile" })
 		public MyResult compute(MyRequest req, User user) {
 			Entity regId = new Entity("GCMDeviceIds", user.getEmail());
-			regId.setProperty("regid", "testing");
-			regId.setProperty("name", "skye");
+			regId.setProperty("regid", req.getMessage());
 			log.severe("CALLING");
 			if (user == null) {
 				return new MyResult("HELLO " + req.getMessage());
@@ -49,5 +55,42 @@ public class MyEndpoint {
 
 				return new MyResult(user.getEmail() + " sent " + entity.getProperty("name"));
 			}
+		}
+
+		@ApiMethod(name = "sendMessage")
+		public void sendMessage(MyRequest req) {
+
+			Sender sender = new Sender("699958132030");
+			
+			
+			Message message = new Message.Builder().addData("message", "test").build();
+			
+			
+			try {
+				entity = datastore.get(keyRegId);
+				List<String> devices = getAllRegIds();
+				if(!devices.isEmpty()) {
+					log.severe("not empty");
+					MulticastResult result = sender.send(message, entity.getProperty("regid"), 5);
+					log.severe("past sent");
+				}
+
+			}catch(IOException e) {
+				log.severe("IOException");
+			}
+
+		}
+
+		// Reads all previously stored device tokens from the database
+		private ArrayList<String> getAllRegIds(){
+			ArrayList<String> regIds = new ArrayList<String>();
+			Query gaeQuery = new Query("GCMDeviceIds");
+			PreparedQuery pq = datastore.prepare(gaeQuery);
+			for (Entity result : pq.asIterable()){
+				String id = (String) result.getProperty("regid");
+				regIds.add(id);
+			}
+
+			return regIds;
 		}
 }
