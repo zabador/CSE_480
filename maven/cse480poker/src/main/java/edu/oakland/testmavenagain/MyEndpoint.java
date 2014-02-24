@@ -57,26 +57,23 @@ public class MyEndpoint {
 			}
 		}
 
-		@ApiMethod(name = "sendMessage")
+			@ApiMethod(name = "sendMessage")
 		public void sendMessage(MyRequest req) {
 
-			Sender sender = new Sender("699958132030");
+			Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 			
 			
-			Message message = new Message.Builder().addData("message", "test").build();
+			Message message = new Message.Builder().addData("message", req.getGCMMessage()).build();
 			
-			
-			try {
-				entity = datastore.get(keyRegId);
-				List<String> devices = getAllRegIds();
+			try { List<String> devices = getAllRegIds();
 				if(!devices.isEmpty()) {
 					log.severe("not empty");
-					MulticastResult result = sender.send(message, entity.getProperty("regid"), 5);
+					MulticastResult result = sender.send(message, devices, 1);
 					log.severe("past sent");
 				}
 
 			}catch(IOException e) {
-				log.severe("IOException");
+				log.severe("IOException " + e.getCause());
 			}
 
 		}
