@@ -29,6 +29,9 @@ proguard/
 *.iws
 .idea/
 
+#eclim files
+eclim.log
+
 
 #app engine generated files
 *.pyc
