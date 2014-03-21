@@ -27,67 +27,72 @@ import java.io.IOException;
 
 @Api(name = "myendpoint")
 public class MyEndpoint {
-	private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
-	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
+    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-	@ApiMethod(name = "compute",
-			clientIds = {Ids.WEB_CLIENT_ID, Ids.ANDROID_CLIENT_ID, Ids.BRANDON_CLIENT_ID, API_EXPLORER_CLIENT_ID },
-			audiences = {Ids.WEB_CLIENT_ID },
-			scopes = {
-				"https://www.googleapis.com/auth/userinfo.email",
-				"https://www.googleapis.com/auth/userinfo.profile" })
-		public MyResult compute(MyRequest req, User user) {
-			Entity regId = new Entity("GCMDeviceIds", user.getEmail());
-			regId.setProperty("regid", req.getMessage());
-			log.severe("CALLING");
-			if (user == null) {
-				return new MyResult("HELLO " + req.getMessage());
-			} else {
-				datastore.put(regId);
-				log.info("user  " + user.getUserId());
-				Entity entity = null;
-				Key keyRegId = KeyFactory.createKey("GCMDeviceIds", user.getEmail());
-				try {
-					entity = datastore.get(keyRegId);
-				}catch(EntityNotFoundException e) {
-					e.printStackTrace();
-				}
+    @ApiMethod(name = "compute",
+            clientIds = {Ids.WEB_CLIENT_ID, 
+                Ids.BEVERLY_CLIENT_ID, 
+        Ids.MIRIAM_CLIENT_ID, 
+        Ids.GEOFF_CLIENT_ID, 
+        Ids.BRANDON_CLIENT_ID, 
+        API_EXPLORER_CLIENT_ID },
+        audiences = {Ids.WEB_CLIENT_ID },
+        scopes = {
+            "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile" })
+        public MyResult compute(MyRequest req, User user) {
+            Entity regId = new Entity("GCMDeviceIds", user.getEmail());
+            regId.setProperty("regid", req.getMessage());
+            log.severe("CALLING");
+            if (user == null) {
+                return new MyResult("HELLO " + req.getMessage());
+            } else {
+                datastore.put(regId);
+                log.info("user  " + user.getUserId());
+                Entity entity = null;
+                Key keyRegId = KeyFactory.createKey("GCMDeviceIds", user.getEmail());
+                try {
+                    entity = datastore.get(keyRegId);
+                }catch(EntityNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-				return new MyResult(user.getEmail() + " sent " + entity.getProperty("name"));
-			}
-		}
+                return new MyResult(user.getEmail() + " sent " + entity.getProperty("name"));
+            }
+        }
 
-			@ApiMethod(name = "sendMessage")
-		public void sendMessage(MyRequest req) {
+    @ApiMethod(name = "sendMessage")
+        public void sendMessage(MyRequest req) {
 
-			Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
-			
-			
-			Message message = new Message.Builder().addData("message", req.getGCMMessage()).build();
-			
-			try { List<String> devices = getAllRegIds();
-				if(!devices.isEmpty()) {
-					log.severe("not empty");
-					MulticastResult result = sender.send(message, devices, 1);
-					log.severe("past sent");
-				}
+            Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 
-			}catch(IOException e) {
-				log.severe("IOException " + e.getCause());
-			}
 
-		}
+            Message message = new Message.Builder().addData("message", req.getGCMMessage()).build();
 
-		// Reads all previously stored device tokens from the database
-		private ArrayList<String> getAllRegIds(){
-			ArrayList<String> regIds = new ArrayList<String>();
-			Query gaeQuery = new Query("GCMDeviceIds");
-			PreparedQuery pq = datastore.prepare(gaeQuery);
-			for (Entity result : pq.asIterable()){
-				String id = (String) result.getProperty("regid");
-				regIds.add(id);
-			}
+            try { List<String> devices = getAllRegIds();
+                if(!devices.isEmpty()) {
+                    log.severe("not empty");
+                    MulticastResult result = sender.send(message, devices, 1);
+                    log.severe("past sent");
+                }
 
-			return regIds;
-		}
+            }catch(IOException e) {
+                log.severe("IOException " + e.getCause());
+            }
+
+        }
+
+    // Reads all previously stored device tokens from the database
+    private ArrayList<String> getAllRegIds(){
+        ArrayList<String> regIds = new ArrayList<String>();
+        Query gaeQuery = new Query("GCMDeviceIds");
+        PreparedQuery pq = datastore.prepare(gaeQuery);
+        for (Entity result : pq.asIterable()){
+            String id = (String) result.getProperty("regid");
+            regIds.add(id);
+        }
+
+        return regIds;
+    }
 }
