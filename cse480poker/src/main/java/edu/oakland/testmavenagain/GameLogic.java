@@ -1,4 +1,4 @@
-package edu.oakland.cse480tester;
+package edu.oakland.testmavenagain;
 
 public class GameLogic {
 

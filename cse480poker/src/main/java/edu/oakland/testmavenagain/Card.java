@@ -1,4 +1,4 @@
-package edu.oakland.cse480tester;
+package edu.oakland.testmavenagain;
 /***************************************************************************
 Copyright (c) 2000:
       University of Alberta,
