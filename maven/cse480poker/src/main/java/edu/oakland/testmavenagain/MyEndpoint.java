@@ -72,6 +72,26 @@ public class MyEndpoint {
             return new MyResult("Game Started");
         }
 
+        @ApiMethod(name = "placeBet",
+                clientIds = {Ids.WEB_CLIENT_ID, 
+                    Ids.BEVERLY_CLIENT_ID, 
+            Ids.MIRIAM_CLIENT_ID, 
+            Ids.GEOFF_CLIENT_ID, 
+            Ids.BRANDON_CLIENT_ID, 
+            API_EXPLORER_CLIENT_ID },
+            audiences = {Ids.WEB_CLIENT_ID },
+            scopes = {
+                "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile" })
+        public MyResult placeBet(MyRequest req, User user) {
+            Entity bet = new Entity("Players", user.getEmail());
+            bet.setProperty("currentBet", req.getBet());
+            datastore.put(bet);
+
+            // TODO implement game logic code
+            return new MyResult("You placed you bet of "+ req.getBet());
+        }
+
     @ApiMethod(name = "sendMessage")
         public void sendMessage(MyRequest req) {
 

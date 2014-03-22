@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 public class MyRequest {
     private String regId;
     private String GCMmessage;
+    private int bet;
 
     public MyRequest() {}
 
@@ -38,6 +39,20 @@ public class MyRequest {
      */
     public void setGCMmessage(String gCMmessage) {
         GCMmessage = gCMmessage;
+    }
+
+    /**
+     * @return the bet
+     */
+    public int getBet() {
+        return bet;
+    }
+
+    /**
+     * @param bet the bet to set
+     */
+    public void setBet(int bet) {
+        this.bet = bet;
     }
 }
 

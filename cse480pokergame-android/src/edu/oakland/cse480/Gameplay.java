@@ -573,8 +573,8 @@ public class Gameplay extends Activity {
 
 			try {
 				MyRequest r = new MyRequest();
-				r.setRegId(regid);
-				return endpoint.startGame().execute();
+				r.setBet(38);
+				return endpoint.placeBet(r).execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 				MyResult r = new MyResult();
