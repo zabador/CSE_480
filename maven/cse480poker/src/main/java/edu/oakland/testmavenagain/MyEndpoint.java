@@ -44,6 +44,10 @@ public class MyEndpoint {
         public MyResult authenticate(MyRequest req, User user) {
             Entity regId = new Entity("Players", user.getEmail());
             regId.setProperty("regid", req.getRegId());
+            regId.setProperty("currentBet", 0);
+            regId.setProperty("fold", false);
+            regId.setProperty("handCards", "");
+            regId.setProperty("tokens", 100);
             log.severe("CALLING");
             if (user == null) {
                 return new MyResult("Login failed");
@@ -84,9 +88,33 @@ public class MyEndpoint {
                 "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult placeBet(MyRequest req, User user) {
-            Entity bet = new Entity("Players", user.getEmail());
-            bet.setProperty("currentBet", req.getBet());
-            datastore.put(bet);
+
+            Entity entity = null;
+            Key key = KeyFactory.createKey("Players", user.getEmail());
+            try {
+                //TODO find a better way to update properties
+                entity = datastore.get(key);
+                String regid = (String)entity.getProperty("regid");
+                boolean fold = (Boolean)entity.getProperty("fold");
+                String handCards = (String)entity.getProperty("handCards");
+                int tokens = ((Long)entity.getProperty("tokens")).intValue();
+
+                // reset everything
+                entity.setProperty("regid", regid);
+                entity.setProperty("currentBet",req.getBet());
+                entity.setProperty("fold", fold);
+                entity.setProperty("handCards", handCards);
+                entity.setProperty("tokens", tokens);
+
+                datastore.put(entity);
+
+            }catch(EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+           // Entity bet = new Entity("Players", user.getEmail());
+           // bet.setProperty("currentBet", req.getBet());
+           // datastore.put(bet);
 
             // TODO implement game logic code
             return new MyResult("You placed you bet of "+ req.getBet());
