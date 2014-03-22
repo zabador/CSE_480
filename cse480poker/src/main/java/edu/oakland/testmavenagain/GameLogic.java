@@ -235,6 +235,7 @@ public class GameLogic {
         }
     }
     
+    //TEST!
     public void flop() {
         Card [] flop = new Card[3];
         for (int i=0; i<3; i++){

@@ -37,6 +37,7 @@ public class MyEndpoint {
                 Ids.BEVERLY_CLIENT_ID, 
         Ids.MIRIAM_CLIENT_ID, 
         Ids.GEOFF_CLIENT_ID, 
+        Ids.CECILE_CLIENT_ID,
         Ids.BRANDON_CLIENT_ID, 
         API_EXPLORER_CLIENT_ID },
         audiences = {Ids.WEB_CLIENT_ID },
@@ -57,7 +58,11 @@ public class MyEndpoint {
                 datastore.put(regId);
                 gameLogic.startGame();
 
+<<<<<<< HEAD
+                return new MyResult("YOU ROCK!");
+=======
                 return new MyResult("hello moto");
+>>>>>>> branch 'Cecile_Branch' of https://github.com/zabador/CSE_480
             }
         }
 
@@ -65,7 +70,8 @@ public class MyEndpoint {
                 clientIds = {Ids.WEB_CLIENT_ID, 
                     Ids.BEVERLY_CLIENT_ID, 
         Ids.MIRIAM_CLIENT_ID, 
-        Ids.GEOFF_CLIENT_ID, 
+        Ids.GEOFF_CLIENT_ID,
+        Ids.CECILE_CLIENT_ID,
         Ids.BRANDON_CLIENT_ID, 
         API_EXPLORER_CLIENT_ID },
         audiences = {Ids.WEB_CLIENT_ID },
@@ -84,7 +90,8 @@ public class MyEndpoint {
                 clientIds = {Ids.WEB_CLIENT_ID, 
                     Ids.BEVERLY_CLIENT_ID, 
             Ids.MIRIAM_CLIENT_ID, 
-            Ids.GEOFF_CLIENT_ID, 
+            Ids.GEOFF_CLIENT_ID,
+            Ids.CECILE_CLIENT_ID,
             Ids.BRANDON_CLIENT_ID, 
             API_EXPLORER_CLIENT_ID },
             audiences = {Ids.WEB_CLIENT_ID },
