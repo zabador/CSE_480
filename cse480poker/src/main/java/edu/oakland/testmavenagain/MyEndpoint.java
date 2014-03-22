@@ -19,6 +19,7 @@ import com.google.appengine.api.users.User;
 
 
 import static com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID;
+import edu.oakland.testmavenagain.GameLogic;
 
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.io.IOException;
 public class MyEndpoint {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private GameLogic gameLogic = new GameLogic();
 
     @ApiMethod(name = "authenticate",
             clientIds = {Ids.WEB_CLIENT_ID, 
@@ -53,8 +55,9 @@ public class MyEndpoint {
                 return new MyResult("Login failed");
             } else {
                 datastore.put(regId);
+                gameLogic.startGame();
 
-                return new MyResult("Login Success");
+                return new MyResult("hello moto");
             }
         }
 
@@ -70,6 +73,7 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult startGame() {
+
 
             // TODO implement game logic code
             sendMessage(new MyRequest("Game has started"));
