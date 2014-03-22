@@ -7,10 +7,15 @@ public class MyRequest {
     private String regId;
     private String GCMmessage;
 
+    public MyRequest() {}
+
+    public MyRequest(String GCMmessage) {
+        this.GCMmessage = GCMmessage;
+    }
     /**
      * @return the regId
      */
-    public String getRegId() {
+    public String getRegId() {;
         return regId;
     }
 

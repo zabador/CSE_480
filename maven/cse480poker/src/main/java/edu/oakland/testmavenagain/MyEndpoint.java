@@ -42,7 +42,7 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult authenticate(MyRequest req, User user) {
-            Entity regId = new Entity("GCMDeviceIds", user.getEmail());
+            Entity regId = new Entity("Players", user.getEmail());
             regId.setProperty("regid", req.getRegId());
             log.severe("CALLING");
             if (user == null) {
@@ -52,6 +52,24 @@ public class MyEndpoint {
 
                 return new MyResult("Login Success");
             }
+        }
+
+        @ApiMethod(name = "startGame",
+                clientIds = {Ids.WEB_CLIENT_ID, 
+                    Ids.BEVERLY_CLIENT_ID, 
+        Ids.MIRIAM_CLIENT_ID, 
+        Ids.GEOFF_CLIENT_ID, 
+        Ids.BRANDON_CLIENT_ID, 
+        API_EXPLORER_CLIENT_ID },
+        audiences = {Ids.WEB_CLIENT_ID },
+        scopes = {
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile" })
+        public MyResult startGame() {
+
+            // TODO implement game logic code
+            sendMessage(new MyRequest("Game has started"));
+            return new MyResult("Game Started");
         }
 
     @ApiMethod(name = "sendMessage")
@@ -66,8 +84,8 @@ public class MyEndpoint {
                 if(!devices.isEmpty()) {
                     log.severe("not empty");
 
-                @SuppressWarnings("unused")
-                MulticastResult result = sender.send(message, devices, 1);
+                    @SuppressWarnings("unused")
+                    MulticastResult result = sender.send(message, devices, 1);
                     log.severe("past sent");
                 }
 
@@ -80,7 +98,7 @@ public class MyEndpoint {
     // Reads all previously stored device tokens from the database
     private ArrayList<String> getAllRegIds(){
         ArrayList<String> regIds = new ArrayList<String>();
-        Query gaeQuery = new Query("GCMDeviceIds");
+        Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             String id = (String) result.getProperty("regid");

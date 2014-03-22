@@ -574,7 +574,7 @@ public class Gameplay extends Activity {
 			try {
 				MyRequest r = new MyRequest();
 				r.setRegId(regid);
-				return endpoint.authenticate(r).execute();
+				return endpoint.startGame().execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 				MyResult r = new MyResult();
