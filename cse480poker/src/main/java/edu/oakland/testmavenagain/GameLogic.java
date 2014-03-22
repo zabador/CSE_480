@@ -28,21 +28,29 @@ public class GameLogic {
     public void startGame() {
         Deck deck = new Deck();
         deck.shuffle();
-        currentPlayer = 0;
 
         ArrayList<String> playersList = getAllPlayers();
         Hand [] playerHand = new Hand[playersList.size()];	
+
+        Entity game = new Entity("GameState", "currentGame");
+        game.setProperty("currentplayer", 1);
+        game.setProperty("numberOfPlayers", playersList.size());
+        game.setProperty("firstBets", true);
+        game.setProperty("flopBets", false);
+        game.setProperty("turnBets", false);
+        game.setProperty("riverBets", false);
+        datastore.put(game);
 
         for (int i=0; i<playersList.size(); i++ ) {
             log.severe(""+playersList.get(i));
             playerHand[i] = new Hand();
             playerHand[i].addCard(deck.deal());
             playerHand[i].addCard(deck.deal());
-            updateHandOfCards(playersList.get(0), playerHand[i].toString());
+            updateHandOfCards(playersList.get(i), playerHand[i].toString());
         }
 
         MyEndpoint endpoint = new MyEndpoint();
-        endpoint.sendNotification(new MyRequest(playersList.get(currentPlayer), "place bet"));
+        endpoint.sendNotification(new MyRequest(playersList.get(0), "place bet"));
 
     }
 
