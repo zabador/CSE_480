@@ -20,13 +20,18 @@ public class GameLogic {
 
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
+    private static Deck deck;
 
     public String test() {
         return "hope this works";
     }
 
+    /**
+     * Method will start the game and create a new table to store
+     * game state it
+     */
     public void startGame() {
-        Deck deck = new Deck();
+        deck = new Deck();
         deck.shuffle();
 
         ArrayList<String> playersList = getAllPlayers();
@@ -39,6 +44,9 @@ public class GameLogic {
         game.setProperty("flopBets", false);
         game.setProperty("turnBets", false);
         game.setProperty("riverBets", false);
+        game.setProperty("flop", "");
+        game.setProperty("turn", "");
+        game.setProperty("river", "");
         datastore.put(game);
 
         for (int i=0; i<playersList.size(); i++ ) {
@@ -170,5 +178,106 @@ public class GameLogic {
         }catch(EntityNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void placeBet(String user, int bet) {
+        try {
+            Entity game = null;
+            Key key = KeyFactory.createKey("GameState", user);
+            game = datastore.get(key);
+            int currentPlayer = ((Long)game.getProperty("currentPlayer")).intValue();
+            int numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
+            boolean firstBets = (Boolean)game.getProperty("firstBets");
+            boolean flopBets = (Boolean)game.getProperty("flopBets");
+            boolean turnBets = (Boolean)game.getProperty("turnBets");
+            boolean riverBets = (Boolean)game.getProperty("riverBets");
+            String turn = (String)game.getProperty("turn");
+            String flop = (String)game.getProperty("flop");
+            String river = (String)game.getProperty("river");
+
+            //TODO figure out fold
+            currentPlayer++;
+            if(currentPlayer > numberOfPlayers) {
+               currentPlayer = 1; // set back to one for next round of betting
+               if(firstBets) {
+                   firstBets = false; // go to flopBets
+                   flopBets = true; // start flop bets
+                   flop(); //TODO create a flop method to deal out flops and update datastore
+               }
+               else if(flopBets) {
+                   flopBets = false; // go to turnBets
+                   turnBets = true; // start turn bets
+                   turn(); //TODO create a turn method to deal out flops and update datastore
+               }
+               else if(turnBets) {
+                   turnBets = false; // go to turnBets
+                   riverBets = true; // start turn bets
+                   river(); //TODO create a flop method to deal out flops and update datastore
+               }
+               else if(riverBets) {
+                   riverBets = false; // go to turnBets
+                   endGame(); //TODO create a flop method to deal out flops and update datastore
+               }
+            }
+            game.setProperty("currentPlayer", currentPlayer);
+            game.setProperty("numberOfPlayers", numberOfPlayers);
+            game.setProperty("firstBets", firstBets);
+            game.setProperty("flopBets", flopBets);
+            game.setProperty("turnBets", turnBets);
+            game.setProperty("riverBets", riverBets);
+            game.setProperty("turn", turn);
+            game.setProperty("flop", flop);
+            game.setProperty("river", river);
+
+            datastore.put(game);
+        }catch(EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void flop() {
+        Card [] flop = new Card[3];
+        for (int i=0; i<3; i++){
+            flop[i] = deck.deal();
+        }
+
+        try {
+            Entity game = null;
+            Key key = KeyFactory.createKey("GameState", "currentGame");
+            game = datastore.get(key);
+            int currentPlayer = ((Long)game.getProperty("currentPlayer")).intValue();
+            int numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
+            boolean firstBets = (Boolean)game.getProperty("firstBets");
+            boolean flopBets = (Boolean)game.getProperty("flopBets");
+            boolean turnBets = (Boolean)game.getProperty("turnBets");
+            boolean riverBets = (Boolean)game.getProperty("riverBets");
+            String turn = (String)game.getProperty("turn");
+            String river = (String)game.getProperty("river");
+
+            game.setProperty("currentPlayer", currentPlayer);
+            game.setProperty("numberOfPlayers", numberOfPlayers);
+            game.setProperty("firstBets", firstBets);
+            game.setProperty("flopBets", flopBets);
+            game.setProperty("turnBets", turnBets);
+            game.setProperty("riverBets", riverBets);
+            game.setProperty("turn", turn);
+            game.setProperty("flop", flop);
+            game.setProperty("river", river);
+
+            datastore.put(game);
+        }catch(EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void turn() {
+
+    }
+    public void river() {
+
+    }
+    public void endGame() {
+
     }
 }
