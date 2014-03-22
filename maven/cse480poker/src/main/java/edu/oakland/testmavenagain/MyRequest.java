@@ -4,22 +4,35 @@ import javax.persistence.Entity;
 
 @Entity
 public class MyRequest {
-	private String message;
-	private String GCMmessage;
+    private String regId;
+    private String GCMmessage;
 
-	public String getMessage() {
-		return message;
-	}
+    /**
+     * @return the regId
+     */
+    public String getRegId() {
+        return regId;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    /**
+     * @param regId the regId to set
+     */
+    public void setRegId(String regId) {
+        this.regId = regId;
+    }
 
-	public String getGCMMessage() {
-		return GCMmessage;
-	}
+    /**
+     * @return the gCMmessage
+     */
+    public String getGCMmessage() {
+        return GCMmessage;
+    }
 
-	public void setGCMMessage(String GCMmessage) {
-		this.GCMmessage = GCMmessage;
-	}
+    /**
+     * @param gCMmessage the gCMmessage to set
+     */
+    public void setGCMmessage(String gCMmessage) {
+        GCMmessage = gCMmessage;
+    }
 }
+

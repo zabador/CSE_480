@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.util.Log;
 
 public class Gameplay extends Activity {
@@ -572,8 +573,8 @@ public class Gameplay extends Activity {
 
 			try {
 				MyRequest r = new MyRequest();
-				r.setMessage(regid);
-				return endpoint.compute(r).execute();
+				r.setRegId(regid);
+				return endpoint.authenticate(r).execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 				MyResult r = new MyResult();
@@ -585,8 +586,8 @@ public class Gameplay extends Activity {
 
 		@Override
 		protected void onPostExecute(MyResult r) {
-			TextView t = (TextView) findViewById(R.id.textView1);
-			t.setText(r.getValue());
+            Toast toast = Toast.makeText(context, r.getValue(), Toast.LENGTH_SHORT);
+            toast.show();
 		}
 	}
 }

@@ -30,7 +30,7 @@ public class MyEndpoint {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    @ApiMethod(name = "compute",
+    @ApiMethod(name = "authenticate",
             clientIds = {Ids.WEB_CLIENT_ID, 
                 Ids.BEVERLY_CLIENT_ID, 
         Ids.MIRIAM_CLIENT_ID, 
@@ -41,24 +41,16 @@ public class MyEndpoint {
         scopes = {
             "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile" })
-        public MyResult compute(MyRequest req, User user) {
+        public MyResult authenticate(MyRequest req, User user) {
             Entity regId = new Entity("GCMDeviceIds", user.getEmail());
-            regId.setProperty("regid", req.getMessage());
+            regId.setProperty("regid", req.getRegId());
             log.severe("CALLING");
             if (user == null) {
-                return new MyResult("HELLO " + req.getMessage());
+                return new MyResult("Login failed");
             } else {
                 datastore.put(regId);
-                log.info("user  " + user.getUserId());
-                Entity entity = null;
-                Key keyRegId = KeyFactory.createKey("GCMDeviceIds", user.getEmail());
-                try {
-                    entity = datastore.get(keyRegId);
-                }catch(EntityNotFoundException e) {
-                    e.printStackTrace();
-                }
 
-                return new MyResult(user.getEmail() + " sent " + entity.getProperty("name"));
+                return new MyResult("Login Success");
             }
         }
 
@@ -68,12 +60,14 @@ public class MyEndpoint {
             Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 
 
-            Message message = new Message.Builder().addData("message", req.getGCMMessage()).build();
+            Message message = new Message.Builder().addData("message", req.getGCMmessage()).build();
 
             try { List<String> devices = getAllRegIds();
                 if(!devices.isEmpty()) {
                     log.severe("not empty");
-                    MulticastResult result = sender.send(message, devices, 1);
+
+                @SuppressWarnings("unused")
+                MulticastResult result = sender.send(message, devices, 1);
                     log.severe("past sent");
                 }
 
