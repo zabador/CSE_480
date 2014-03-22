@@ -26,30 +26,37 @@ public class GameLogic {
     }
 
     public void startGame() {
+        Deck deck = new Deck();
+        deck.shuffle();
+
         ArrayList<String> playersList = getAllPlayers();
+        Hand [] playerHand = new Hand[playersList.size()];	
+
         for (int i=0; i<playersList.size(); i++ ) {
             log.severe(""+playersList.get(i));
+            playerHand[i] = new Hand();
+            playerHand[i].addCard(deck.deal());
+            playerHand[i].addCard(deck.deal());
+            updateHandOfCards(playersList.get(i), playerHand[i].toString());
         }
 
     }
 
     public void gameStart(int n){
 
-        Deck deck = new Deck();
-        deck.shuffle();
 
         //Array of all players' hands
         Hand [] playerHand = new Hand[n];	
         for(int x=0; x<n; x++){
             playerHand[x] = new Hand();
         }
-
-        //Dealing 2 cards for each player
-        for (int i=0; i<2; i++){
-            for (int j=0; j<n; j++){
-                playerHand[j].addCard(deck.deal());
-            }
-        }
+////////////////////////
+//        //Dealing 2 cards for each player
+//        for (int i=0; i<2; i++){
+//            for (int j=0; j<n; j++){
+//                playerHand[].addCard(deck.deal());
+//            }
+//        }
 
         for (int i=0; i<n; i++){
             String prtCard = Integer.toString(i+1);
@@ -60,7 +67,7 @@ public class GameLogic {
         //Flop, Turn, and River cards
         Card [] ftr = new Card[5];
         for (int i=0; i<5; i++){
-            ftr[i] = deck.deal();
+           // ftr[i] = deck.deal();
             System.out.print( ftr[i] + " ");
         }
         System.out.println("\n");
@@ -127,5 +134,29 @@ public class GameLogic {
         }
 
         return players;
+    }
+
+    public void updateHandOfCards(String user, String handCards) {
+        //TODO find a better way to update properties
+        try {
+            Entity entity = null;
+            Key key = KeyFactory.createKey("Players", user);
+            entity = datastore.get(key);
+            int bet = ((Long)entity.getProperty("currentBet")).intValue();
+            String regid = (String)entity.getProperty("regid");
+            boolean fold = (Boolean)entity.getProperty("fold");
+            int tokens = ((Long)entity.getProperty("tokens")).intValue();
+
+            // reset everything
+            entity.setProperty("regid", regid);
+            entity.setProperty("currentBet", bet);
+            entity.setProperty("fold", fold);
+            entity.setProperty("handCards", handCards);
+            entity.setProperty("tokens", tokens);
+
+            datastore.put(entity);
+        }catch(EntityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
