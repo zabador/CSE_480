@@ -28,6 +28,7 @@ public class GameLogic {
     public void startGame() {
         Deck deck = new Deck();
         deck.shuffle();
+        currentPlayer = 0;
 
         ArrayList<String> playersList = getAllPlayers();
         Hand [] playerHand = new Hand[playersList.size()];	
@@ -37,8 +38,11 @@ public class GameLogic {
             playerHand[i] = new Hand();
             playerHand[i].addCard(deck.deal());
             playerHand[i].addCard(deck.deal());
-            updateHandOfCards(playersList.get(i), playerHand[i].toString());
+            updateHandOfCards(playersList.get(0), playerHand[i].toString());
         }
+
+        MyEndpoint endpoint = new MyEndpoint();
+        endpoint.sendNotification(new MyRequest(playersList.get(currentPlayer), "place bet"));
 
     }
 

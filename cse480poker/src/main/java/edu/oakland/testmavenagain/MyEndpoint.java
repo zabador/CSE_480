@@ -144,7 +144,37 @@ public class MyEndpoint {
             }catch(IOException e) {
                 log.severe("IOException " + e.getCause());
             }
+        }
 
+    /** this is called from the game logic to 
+     *  send notifications to the users
+     */
+    @ApiMethod(name = "sendNotification")
+        public void sendNotification(MyRequest req) {
+
+            Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
+
+            Message message = new Message.Builder().addData("message", req.getGCMmessage()).build();
+            List<String> user = new ArrayList<String>(); 
+
+            try {
+                Entity entity = null;
+                Key key = KeyFactory.createKey("Players", req.getUser());
+                entity = datastore.get(key);
+                String regid = (String)entity.getProperty("regid");
+                user.add(regid);
+            }catch(EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            try { 
+                @SuppressWarnings("unused")
+                MulticastResult result = sender.send(message, user, 1);
+                log.severe("past sent");
+            }catch(IOException e) {
+                log.severe("IOException " + e.getCause());
+            }
         }
 
     // Reads all previously stored device tokens from the database
