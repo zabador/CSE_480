@@ -66,6 +66,8 @@ public class GameLobby extends Activity {
 		credential = GoogleAccountCredential.usingAudience(this,
                 "server:client_id:" + WEB_CLIENT_ID);
 
+        CredentialHack.credential = credential;
+
 		gcm = GoogleCloudMessaging.getInstance(this);
 		regid = getRegistrationId(context);
 
@@ -74,12 +76,12 @@ public class GameLobby extends Activity {
             new JacksonFactory(),
             credential);
         endpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
+        CredentialHack.endpoint = endpoint;
 
         // handle the button click for joining game
         Button join = (Button) findViewById(R.id.btnJoinGame);
         join.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-				Log.d("account name is ", credential.getSelectedAccountName());
 				new DoSomethingAsync(endpoint, gcm, true).execute();
                 Intent intent = new Intent(context, Gameplay.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

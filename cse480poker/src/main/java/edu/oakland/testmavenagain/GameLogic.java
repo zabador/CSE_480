@@ -19,7 +19,7 @@ public class GameLogic {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static Deck deck;
 
-    private final String PLACEBET = "||3||";
+    private final String PLACEBET = "3";
 
     public String test() {
         return "hope this works";
@@ -37,18 +37,18 @@ public class GameLogic {
         Hand [] playerHand = new Hand[playersList.size()];  
 
         // initialize the flop to store in the datastore
-        Hand[] flop = new Hand[1];
+        Card[] flop = new Card[3];
         for (int i=0; i<3; i++) {
-            flop[i].addCard(deck.deal());
+            flop[i] = deck.deal();
         }
 
         // initialize the turn to store in the datastore
-        Hand[] turn = new Hand[1];
-        turn[0].addCard(deck.deal());
+        Card[] turn = new Card[1];
+        turn[0] = deck.deal();
 
         // initialize the river to store in the datastore
-        Hand[] river = new Hand[1];
-        river[0].addCard(deck.deal());
+        Card[] river = new Card[1];
+        river[0] = deck.deal();
 
         Entity game = new Entity("GameState", "currentGame");
         game.setProperty("currentplayer", 1);
@@ -187,12 +187,13 @@ public class GameLogic {
 
     public void placeBet(int bet) {
         // pull out currentgame state to resave after updateing
+        log.severe("in place bet game logic");
         MyEndpoint endpoint = new MyEndpoint();
         try {
             Entity game = null;
             Key key = KeyFactory.createKey("GameState", "currentGame");
             game = datastore.get(key);
-            int currentPlayer = ((Long)game.getProperty("currentPlayer")).intValue();
+            int currentPlayer = ((Long)game.getProperty("currentplayer")).intValue();
             int numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
             boolean firstBets = (Boolean)game.getProperty("firstBets");
             boolean flopBets = (Boolean)game.getProperty("flopBets");
@@ -231,11 +232,13 @@ public class GameLogic {
                     riverBets = false; // go to turnBets
                     endGame(); //TODO
                 }
-                endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), PLACEBET));
             }
-            // save the update data
-            game.setProperty("currentPlayer", currentPlayer);
+            else {
+                endpoint.sendNotification(new MyRequest(
+                        getCurrentPlayer(currentPlayer), PLACEBET)); // save the update data
+            }
+
+            game.setProperty("currentplayer", currentPlayer);
             game.setProperty("numberOfPlayers", numberOfPlayers);
             game.setProperty("firstBets", firstBets);
             game.setProperty("flopBets", flopBets);
@@ -267,7 +270,7 @@ public class GameLogic {
             int tokens = ((Long)result.getProperty("tokens")).intValue();
 
             if (currentPosition == pq.countEntities(FetchOptions.Builder.withLimit(100))) {
-                currentPosition = 0;
+                currentPosition = 1;
             }
             else {
                 currentPosition++;

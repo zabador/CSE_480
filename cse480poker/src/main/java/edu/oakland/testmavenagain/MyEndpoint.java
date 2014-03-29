@@ -64,7 +64,9 @@ public class MyEndpoint {
     private int numberOfPlayers() {
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
-        return pq.countEntities(FetchOptions.Builder.withLimit(100));
+        int numOfPlayers = pq.countEntities(FetchOptions.Builder.withLimit(100));
+        log.severe("numOfPlayers = " + numOfPlayers);
+        return numOfPlayers; 
     }
 
 
@@ -97,7 +99,7 @@ public class MyEndpoint {
             }
 
             gameLogic.startGame();
-            sendMessage(new MyRequest("Game has started"));
+            sendMessage(new MyRequest("2"));
             return new MyResult("Game Started");
         }
 
@@ -141,6 +143,7 @@ public class MyEndpoint {
 
 
             gameLogic.placeBet(req.getBet());
+            log.severe("in placebet endpoint");
             return new MyResult("You placed you bet of "+ req.getBet());
         }
 

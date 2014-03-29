@@ -74,6 +74,15 @@ public class Gameplay extends Activity {
 
 		context = getApplicationContext();
 
+        // handle the button click for joining game
+        Button bet = (Button) findViewById(R.id.btnBet);
+        bet.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+				new DoSomethingAsync(endpoint, gcm).execute();
+            }
+        });
+
+        endpoint = CredentialHack.endpoint;
         
 
 	}
@@ -440,15 +449,14 @@ public class Gameplay extends Activity {
 		card2 = (ImageView) findViewById(R.id.card2spot);
 		card2.setImageResource(resCard2);
     }
+
 	private class DoSomethingAsync extends AsyncTask<Void, Void, MyResult> {
 		private Myendpoint endpoint;
 		private GoogleCloudMessaging gcm;
-        private boolean startGame;
 
-		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm, boolean startGame) {
+		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm) {
 			this.endpoint = endpoint;
 			this.gcm = gcm;
-            this.startGame = startGame;
 		}
 
 		@Override
