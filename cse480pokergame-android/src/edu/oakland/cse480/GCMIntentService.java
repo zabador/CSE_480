@@ -16,6 +16,8 @@
 
 package edu.oakland.cse480;
 
+import java.util.StringTokenizer;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.IntentService;
@@ -77,7 +79,7 @@ public class GCMIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(extras.toString());
+                sendCustNotification("|" + extras.toString());
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -88,17 +90,49 @@ public class GCMIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    public void sendNotification(String incomingMsg) {
+    private void sendNotification(String msg) {
+        mNotificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, Gameplay.class), 0);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+        .setSmallIcon(R.drawable.ic_launcher)
+        .setContentTitle("GCM Notification")
+        .setStyle(new NotificationCompat.BigTextStyle()
+        .bigText(msg))
+        .setContentText(msg);
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+    
+    public void sendCustNotification(String incomingMsg) {
     	Toast.makeText(this, "GCM notification", Toast.LENGTH_SHORT).show();
     	String msg;
-    	String[] separated = incomingMsg.split(",");
-    	separated[0] = separated[0]; //code
-    	separated[1] = separated[1] + ""; //Additional message with "" to negate a null
     	int msgCode = 0;
-    	msgCode = Integer.parseInt(separated[0]);
+    	String first = "", second = "", third = "";
+    	try {
+    		StringTokenizer tokens = new StringTokenizer(incomingMsg, "|");
+    		first = tokens.nextToken(); //GCM garbage
+    		second = tokens.nextToken(); //Our code
+    		third = tokens.nextToken() + ""; //Our text
+    		msgCode = Integer.parseInt(second);
+    	}catch (Exception e){
+    		Toast.makeText(this, "Tokens didn't work!", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(this, "First " + first + "Second " + second + "third " + third, Toast.LENGTH_SHORT).show();
+    	}
+    	//String[] separated = incomingMsg.split("|");
+    	//separated[0] = separated[0]; //discard
+    	//separated[1] = separated[1] + ""; 
+    	//separated[2] = separated[2] + ""; //Additional message with "" to negate a null
+    	
+    	
     	switch (msgCode){
     	case 1:
-    		msg = "New Player " + separated[1].toString() + " has joined";
+    		msg = "New Player " + third.toString() + " has joined";
     		break;
     	case 2:
     		msg = "The game has started";
@@ -116,11 +150,11 @@ public class GCMIntentService extends IntentService {
     		//Stuff
     		break;
     	case 6:
-    		msg = "The river card, " + separated[1] + " has been dealt";
+    		msg = "The river card, " + third + " has been dealt";
     		//Stuff
     		break;
     	case 7:
-    		msg = "Game over. Winner is " + separated[1];
+    		msg = "Game over. Winner is " + third;
     		//Stuff
     		break;
     	default:
@@ -128,6 +162,7 @@ public class GCMIntentService extends IntentService {
     		//Some default stuff
     		break;
     	}
+    	
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
