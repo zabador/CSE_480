@@ -30,7 +30,7 @@ proguard/
 .idea/
 
 #eclim files
-eclim.log
+eclimd.log
 
 
 #app engine generated files

@@ -7,11 +7,31 @@ public class MyRequest {
     private String regId;
     private String GCMmessage;
     private int bet;
+    private String user;
 
     public MyRequest() {}
 
     public MyRequest(String GCMmessage) {
         this.GCMmessage = GCMmessage;
+    }
+
+    public MyRequest(String user, String GCMmessage) {
+        this.GCMmessage = GCMmessage;
+        this.user = user;
+    }
+
+    /**
+     * @return the user
+     */
+    public String getUser() {;
+        return user;
+    }
+
+    /**
+     * @param regId the regId to set
+     */
+    public void setUser(String user) {
+        this.user = user;
     }
     /**
      * @return the regId
