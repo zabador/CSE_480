@@ -21,4 +21,15 @@
         android:background="#00FF00" 
         android:onClick="joinGame"/>
 
+    <Button
+        android:id="@+id/testNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnJoinGame"
+        android:layout_below="@+id/btnJoinGame"
+        android:layout_marginTop="100dp"
+        android:background="#00FF00"
+        android:text="@string/testNotificationString" 
+        android:onClick="testNotification"/>
+
 </RelativeLayout>
