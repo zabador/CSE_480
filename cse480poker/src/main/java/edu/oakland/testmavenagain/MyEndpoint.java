@@ -5,7 +5,6 @@ import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -50,6 +49,7 @@ public class MyEndpoint {
             regId.setProperty("fold", false);
             regId.setProperty("handCards", "");
             regId.setProperty("tokens", 100);
+            regId.setProperty("currentPosition", numberOfPlayers() + 1);
             log.severe("CALLING");
             if (user == null) {
                 return new MyResult("Login failed");
@@ -57,11 +57,18 @@ public class MyEndpoint {
                 datastore.put(regId);
                 gameLogic.startGame();
 
-                return new MyResult("hello moto");
+                return new MyResult("Login Successful");
             }
         }
 
-        @ApiMethod(name = "startGame",
+    private int numberOfPlayers() {
+        Query gaeQuery = new Query("Players");
+        PreparedQuery pq = datastore.prepare(gaeQuery);
+        return pq.countEntities(FetchOptions.Builder.withLimit(100));
+    }
+
+
+    @ApiMethod(name = "startGame",
                 clientIds = {Ids.WEB_CLIENT_ID, 
                     Ids.BEVERLY_CLIENT_ID, 
         Ids.MIRIAM_CLIENT_ID, 
@@ -74,8 +81,7 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult startGame() {
 
-
-            // TODO implement game logic code
+            gameLogic.startGame();
             sendMessage(new MyRequest("Game has started"));
             return new MyResult("Game Started");
         }
@@ -102,13 +108,15 @@ public class MyEndpoint {
                 boolean fold = (Boolean)entity.getProperty("fold");
                 String handCards = (String)entity.getProperty("handCards");
                 int tokens = ((Long)entity.getProperty("tokens")).intValue();
+                int currentPosition = ((Long)entity.getProperty("currentPosition")).intValue();
 
                 // reset everything
                 entity.setProperty("regid", regid);
-                entity.setProperty("currentBet",req.getBet());
+                entity.setProperty("currentBet",req.getBet()); // store the bet
                 entity.setProperty("fold", fold);
                 entity.setProperty("handCards", handCards);
                 entity.setProperty("tokens", tokens);
+                entity.setProperty("currentPosition", currentPosition);
 
                 datastore.put(entity);
 
@@ -116,11 +124,8 @@ public class MyEndpoint {
                 e.printStackTrace();
             }
 
-           // Entity bet = new Entity("Players", user.getEmail());
-           // bet.setProperty("currentBet", req.getBet());
-           // datastore.put(bet);
 
-            // TODO implement game logic code
+            gameLogic.placeBet(req.getBet());
             return new MyResult("You placed you bet of "+ req.getBet());
         }
 
@@ -138,7 +143,6 @@ public class MyEndpoint {
 
                     @SuppressWarnings("unused")
                     MulticastResult result = sender.send(message, devices, 1);
-                    log.severe("past sent");
                 }
 
             }catch(IOException e) {
@@ -147,7 +151,8 @@ public class MyEndpoint {
         }
 
     /** this is called from the game logic to 
-     *  send notifications to the users
+     *  send notifications to the users updating
+     *  their game state
      */
     @ApiMethod(name = "sendNotification")
         public void sendNotification(MyRequest req) {
