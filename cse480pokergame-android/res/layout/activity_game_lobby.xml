@@ -18,18 +18,16 @@
         android:layout_marginLeft="38dp"
         android:layout_marginTop="26dp"
         android:text="@string/joinGamestring"
-        android:background="#00FF00" 
-        android:onClick="joinGame"/>
+        android:background="#00FF00" />
 
     <Button
-        android:id="@+id/testNotification"
+        android:id="@+id/Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/btnJoinGame"
         android:layout_below="@+id/btnJoinGame"
         android:layout_marginTop="100dp"
         android:background="#00FF00"
-        android:text="@string/testNotificationString" 
-        android:onClick="testNotification"/>
+        android:text="@string/login" />
 
 </RelativeLayout>

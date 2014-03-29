@@ -19,6 +19,8 @@ public class GameLogic {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static Deck deck;
 
+    private final String PLACEBET = "||3||";
+
     public String test() {
         return "hope this works";
     }
@@ -69,7 +71,7 @@ public class GameLogic {
         }
 
         MyEndpoint endpoint = new MyEndpoint();
-        endpoint.sendNotification(new MyRequest(playersList.get(0), "place bet"));
+        endpoint.sendNotification(new MyRequest(playersList.get(0), PLACEBET));
 
     }
 
@@ -214,23 +216,23 @@ public class GameLogic {
                     firstBets = false; // go to flopBets
                     flopBets = true; // start flop bets
                     endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), "place for fold"));
+                            getCurrentPlayer(currentPlayer), PLACEBET));
                 } else if (flopBets) {
                     flopBets = false; // go to turnBets
                     turnBets = true; // start turn bets
                     endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), "place bet for turn"));
+                            getCurrentPlayer(currentPlayer), PLACEBET));
                 } else if (turnBets) {
                     turnBets = false; // go to turnBets
                     riverBets = true; // start turn bets
                     endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), "place bet for river"));
+                            getCurrentPlayer(currentPlayer), PLACEBET));
                 } else if (riverBets) {
                     riverBets = false; // go to turnBets
                     endGame(); //TODO
                 }
                 endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), "place bet for river"));
+                            getCurrentPlayer(currentPlayer), PLACEBET));
             }
             // save the update data
             game.setProperty("currentPlayer", currentPlayer);

@@ -110,6 +110,7 @@ public class GCMIntentService extends IntentService {
     }
     
     public void sendCustNotification(String incomingMsg) {
+        Log.i("this is the incoming message", incomingMsg);
     	Toast.makeText(this, "GCM notification", Toast.LENGTH_SHORT).show();
     	String msg;
     	int msgCode = 0;

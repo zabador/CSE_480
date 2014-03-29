@@ -30,6 +30,7 @@ public class MyEndpoint {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private GameLogic gameLogic = new GameLogic();
+    Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 
     @ApiMethod(name = "authenticate",
             clientIds = {Ids.WEB_CLIENT_ID, 
@@ -55,7 +56,6 @@ public class MyEndpoint {
                 return new MyResult("Login failed");
             } else {
                 datastore.put(regId);
-                gameLogic.startGame();
 
                 return new MyResult("Login Successful");
             }
@@ -80,6 +80,21 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult startGame() {
+
+            MyRequest req = new MyRequest("start");
+            Message message = new Message.Builder().addData("message", req.getGCMmessage()).build();
+
+            try { List<String> devices = getAllRegIds();
+                if(!devices.isEmpty()) {
+                    log.severe("not empty");
+
+                    @SuppressWarnings("unused")
+                    MulticastResult result = sender.send(message, devices, 1);
+                }
+
+            }catch(IOException e) {
+                log.severe("IOException " + e.getCause());
+            }
 
             gameLogic.startGame();
             sendMessage(new MyRequest("Game has started"));
@@ -132,7 +147,6 @@ public class MyEndpoint {
     @ApiMethod(name = "sendMessage")
         public void sendMessage(MyRequest req) {
 
-            Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 
 
             Message message = new Message.Builder().addData("message", req.getGCMmessage()).build();
