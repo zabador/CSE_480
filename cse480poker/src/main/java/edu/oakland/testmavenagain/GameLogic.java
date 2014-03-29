@@ -185,6 +185,7 @@ public class GameLogic {
 
     public void placeBet(int bet) {
         // pull out currentgame state to resave after updateing
+        MyEndpoint endpoint = new MyEndpoint();
         try {
             Entity game = null;
             Key key = KeyFactory.createKey("GameState", "currentGame");
@@ -212,25 +213,24 @@ public class GameLogic {
                 if (firstBets) {
                     firstBets = false; // go to flopBets
                     flopBets = true; // start flop bets
-                    MyEndpoint endpoint = new MyEndpoint();
                     endpoint.sendNotification(new MyRequest(
                             getCurrentPlayer(currentPlayer), "place for fold"));
                 } else if (flopBets) {
                     flopBets = false; // go to turnBets
                     turnBets = true; // start turn bets
-                    MyEndpoint endpoint = new MyEndpoint();
                     endpoint.sendNotification(new MyRequest(
                             getCurrentPlayer(currentPlayer), "place bet for turn"));
                 } else if (turnBets) {
                     turnBets = false; // go to turnBets
                     riverBets = true; // start turn bets
-                    MyEndpoint endpoint = new MyEndpoint();
                     endpoint.sendNotification(new MyRequest(
                             getCurrentPlayer(currentPlayer), "place bet for river"));
                 } else if (riverBets) {
                     riverBets = false; // go to turnBets
                     endGame(); //TODO
                 }
+                endpoint.sendNotification(new MyRequest(
+                            getCurrentPlayer(currentPlayer), "place bet for river"));
             }
             // save the update data
             game.setProperty("currentPlayer", currentPlayer);
