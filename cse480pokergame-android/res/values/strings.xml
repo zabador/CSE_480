@@ -18,5 +18,6 @@
     <string name="lblPlayer3">Player 3</string>
     <string name="lblNotBlind">Not Blind</string>
     <string name="lblPlayerMe">Not your turn</string>
+    <string name="testNotificationString">Test Notification</string>
 
 </resources>
