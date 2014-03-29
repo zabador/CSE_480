@@ -56,33 +56,7 @@ public class GCMIntentService extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
-            /*
-             * Filter messages based on message type. Since it is likely that GCM will be
-             * extended in the future with new message types, just ignore any message types you're
-             * not interested in, or that you don't recognize.
-             */
-            if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-                sendNotification("Send error: " + extras.toString());
-            } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-                sendNotification("Deleted messages on server: " + extras.toString());
-            // If it's a regular GCM message, do some work.
-            } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i = 0; i < 5; i++) {
-                    Log.i(TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendCustNotification("|" + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
-            }
-        }
+        sendCustNotification((String)extras.get("message"));
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
@@ -110,21 +84,14 @@ public class GCMIntentService extends IntentService {
     }
     
     public void sendCustNotification(String incomingMsg) {
-        Log.i("this is the incoming message", incomingMsg);
-    	Toast.makeText(this, "GCM notification", Toast.LENGTH_SHORT).show();
-    	String msg;
-    	int msgCode = 0;
-    	String first = "", second = "", third = "";
-    	try {
-    		StringTokenizer tokens = new StringTokenizer(incomingMsg, "|");
-    		first = tokens.nextToken(); //GCM garbage
-    		second = tokens.nextToken(); //Our code
-    		third = tokens.nextToken() + ""; //Our text
-    		msgCode = Integer.parseInt(second);
-    	}catch (Exception e){
-    		Toast.makeText(this, "Tokens didn't work!", Toast.LENGTH_SHORT).show();
-    		Toast.makeText(this, "First " + first + "Second " + second + "third " + third, Toast.LENGTH_SHORT).show();
-    	}
+        Log.i("incomingMsg = ", ""+incomingMsg);
+        int msgCode;
+        try {
+            msgCode = Integer.parseInt(incomingMsg);
+        }catch(Exception e) {
+            msgCode = 0;
+        }
+        String msg;
     	//String[] separated = incomingMsg.split("|");
     	//separated[0] = separated[0]; //discard
     	//separated[1] = separated[1] + ""; 
@@ -133,7 +100,7 @@ public class GCMIntentService extends IntentService {
     	
     	switch (msgCode){
     	case 1:
-    		msg = "New Player " + third.toString() + " has joined";
+    		msg = "New Player has joined";
     		break;
     	case 2:
     		msg = "The game has started";
@@ -151,11 +118,11 @@ public class GCMIntentService extends IntentService {
     		//Stuff
     		break;
     	case 6:
-    		msg = "The river card, " + third + " has been dealt";
+    		msg = "The river card, has been dealt";
     		//Stuff
     		break;
     	case 7:
-    		msg = "Game over. Winner is " + third;
+    		msg = "Game over. Winner is ";
     		//Stuff
     		break;
     	default:
