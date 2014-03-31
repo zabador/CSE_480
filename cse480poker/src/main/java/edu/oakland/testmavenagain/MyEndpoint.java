@@ -16,13 +16,14 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 
-
 import static com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID;
 import edu.oakland.testmavenagain.GameLogic;
 
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 
 @Api(name = "myendpoint")
@@ -147,6 +148,59 @@ public class MyEndpoint {
             return new MyResult("You placed you bet of "+ req.getBet());
         }
 
+    @ApiMethod(name = "getGameState",
+                clientIds = {Ids.WEB_CLIENT_ID, 
+                    Ids.BEVERLY_CLIENT_ID, 
+        Ids.MIRIAM_CLIENT_ID, 
+        Ids.GEOFF_CLIENT_ID, 
+        Ids.BRANDON_CLIENT_ID, 
+        API_EXPLORER_CLIENT_ID },
+        audiences = {Ids.WEB_CLIENT_ID },
+        scopes = {
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile" })
+        public Map<String, String> getGameState(MyRequest req) {
+            Map<String, String> map = new HashMap<String, String>(); 
+            
+            try {
+                Entity entity = null;
+                Key key = KeyFactory.createKey("Players", req.getUser());
+                entity = datastore.get(key);
+                // fill map with player specific items
+                map.put("tokens",(String)entity.getProperty("tokens"));
+                map.put("fold",(String)entity.getProperty("fold"));
+                map.put("handCards",(String)entity.getProperty("handCard"));
+                map.put("currentBet",(String)entity.getProperty("currentBet"));
+                map.put("currentPosition",(String)entity.getProperty("currentPosition"));
+
+                // mill map with gamestate items
+                key = KeyFactory.createKey("GameState", "currentGame");
+                entity = datastore.get(key);
+                map.put("currentPlayer",(String)entity.getProperty("currentPlayer"));
+                if ((Boolean)entity.getProperty("flopBets")) {
+                    map.put("flop",(String)entity.getProperty("flop"));
+                }
+                else if ((Boolean)entity.getProperty("turnBets")) {
+                    map.put("flop",(String)entity.getProperty("flop"));
+                    map.put("turn",(String)entity.getProperty("turn"));
+                }
+                else if ((Boolean)entity.getProperty("riverBets")) {
+                    map.put("flop",(String)entity.getProperty("flop"));
+                    map.put("turn",(String)entity.getProperty("turn"));
+                    map.put("river",(String)entity.getProperty("river"));
+                }
+                else {
+                    map.put("flop","ic_launcher");
+                    map.put("turn","ic_launcher");
+                    map.put("river","ic_launcher");
+                }
+            }catch(EntityNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            return map;
+        }
     @ApiMethod(name = "sendMessage")
         public void sendMessage(MyRequest req) {
 
