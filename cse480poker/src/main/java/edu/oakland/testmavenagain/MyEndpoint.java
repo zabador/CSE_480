@@ -159,19 +159,19 @@ public class MyEndpoint {
         scopes = {
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile" })
-        public Map<String, String> getGameState(MyRequest req) {
-            Map<String, String> map = new HashMap<String, String>(); 
-            
+        public MyResult getGameState(User user) {
+            log.severe("it made it to getGameState");
+            HashMap<String, String> map = new HashMap<String, String>(); 
             try {
                 Entity entity = null;
-                Key key = KeyFactory.createKey("Players", req.getUser());
+                Key key = KeyFactory.createKey("Players", user.getEmail());
                 entity = datastore.get(key);
                 // fill map with player specific items
-                map.put("tokens",(String)entity.getProperty("tokens"));
-                map.put("fold",(String)entity.getProperty("fold"));
-                map.put("handCards",(String)entity.getProperty("handCard"));
-                map.put("currentBet",(String)entity.getProperty("currentBet"));
-                map.put("currentPosition",(String)entity.getProperty("currentPosition"));
+                map.put("tokens", Long.toString((Long)entity.getProperty("tokens")));
+                map.put("fold",String.valueOf((Boolean)entity.getProperty("fold")));
+                map.put("handCards",(String)entity.getProperty("handCards"));
+                map.put("currentBet",Long.toString((Long)entity.getProperty("currentBet")));
+                map.put("currentPosition",Long.toString((Long)entity.getProperty("currentPosition")));
 
                 // mill map with gamestate items
                 key = KeyFactory.createKey("GameState", "currentGame");
@@ -198,8 +198,12 @@ public class MyEndpoint {
                 e.printStackTrace();
             }
 
+            MyResult r = new MyResult();
+            r.setGameState(map);
+            log.severe(" map is " + r.getGameState().toString());
+            
 
-            return map;
+            return r;
         }
     @ApiMethod(name = "sendMessage")
         public void sendMessage(MyRequest req) {

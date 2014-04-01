@@ -1,9 +1,11 @@
 package edu.oakland.cse480;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
-
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -12,7 +14,6 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.appspot.testmavenagain.myendpoint.Myendpoint;
 import com.appspot.testmavenagain.myendpoint.model.MyRequest;
 import com.appspot.testmavenagain.myendpoint.model.MyResult;
-
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public class Gameplay extends Activity {
 	private String regid;
 	private Context context;
 
-    // defind constants
+	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -60,12 +61,8 @@ public class Gameplay extends Activity {
 	private static final String TAG = "poker";
 	private final String SENDER_ID = "699958132030";
 
-
-
 	private Myendpoint endpoint;
-    private GoogleAccountCredential credential;
-
-	
+	private GoogleAccountCredential credential;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,19 +71,26 @@ public class Gameplay extends Activity {
 
 		context = getApplicationContext();
 
-        // handle the button click for joining game
-        Button bet = (Button) findViewById(R.id.btnBet);
-        bet.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-				new DoSomethingAsync(endpoint, gcm).execute();
-            }
-        });
+		// handle the button click for joining game
+		Button bet = (Button) findViewById(R.id.btnBet);
+		bet.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				new DoSomethingAsync(endpoint, gcm, false,"").execute();
+			}
+		});
 
-        endpoint = CredentialHack.endpoint;
-        
+		endpoint = CredentialHack.endpoint;
+        credential = CredentialHack.credential;
 
+		boolean getGameState = true;
+        MyResult r = null;
+		try {
+			new DoSomethingAsync(endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
+    
+		} catch (Exception ie) {
+            Log.e("Erro", ""+ie.getMessage(), ie);
+        }
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -453,10 +457,14 @@ public class Gameplay extends Activity {
 	private class DoSomethingAsync extends AsyncTask<Void, Void, MyResult> {
 		private Myendpoint endpoint;
 		private GoogleCloudMessaging gcm;
+        private boolean getGameState;
+        private String accountName;
 
-		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm) {
+		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm, boolean getGameState, String accountName) {
 			this.endpoint = endpoint;
 			this.gcm = gcm;
+            this.getGameState = getGameState;
+            this.accountName = accountName;
 		}
 
 		@Override
@@ -471,21 +479,36 @@ public class Gameplay extends Activity {
 			} catch (IOException ex) {
 			}
 
-            try {
-                MyRequest r = new MyRequest();
-                r.setBet(3);
-                return endpoint.placeBet(r).execute();
-			} catch (IOException e) {
-				e.printStackTrace();
-				MyResult r = new MyResult();
-				Log.e("error = ", e.getMessage(), e);
-				r.setValue("EXCEPTION");
-				return r;
-			}
+            if(getGameState) {
+                try {
+                    return endpoint.getGameState().execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    MyResult r = new MyResult();
+                    Log.e("error = ", e.getMessage(), e);
+                    r.setValue("EXCEPTION");
+                    return r;
+                }
+
+            }
+            else {
+                try {
+                    MyRequest r = new MyRequest();
+                    r.setBet(3);
+                    return endpoint.placeBet(r).execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    MyResult r = new MyResult();
+                    Log.e("error = ", e.getMessage(), e);
+                    r.setValue("EXCEPTION");
+                    return r;
+                }
+            }
 		}
 
 		@Override
 		protected void onPostExecute(MyResult r) {
+//            Log.i("map = ", ""+r.getGameState().toString());
             Toast toast = Toast.makeText(context, r.getValue(), Toast.LENGTH_SHORT);
             toast.show();
 		}
