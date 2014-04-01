@@ -97,6 +97,7 @@ public class GCMIntentService extends IntentService {
     	//separated[1] = separated[1] + ""; 
     	//separated[2] = separated[2] + ""; //Additional message with "" to negate a null
     	
+        boolean showNotification = true;
     	
     	switch (msgCode){
     	case 1:
@@ -127,25 +128,29 @@ public class GCMIntentService extends IntentService {
     		break;
     	default:
     		msg = "Switch case isn't working";
+            showNotification = false;
     		//Some default stuff
     		break;
     	}
     	
-        mNotificationManager = (NotificationManager)
+        if (showNotification) {
+            mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, Gameplay.class), 0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    new Intent(this, Gameplay.class), 0);
 
-        NotificationCompat.Builder mBuilder =
+            NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_launcher)
-        .setContentTitle("Poker Notification")
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(msg))
-        .setContentText(msg);
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Poker Notification")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(msg))
+                .setContentText(msg);
 
-        mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            mBuilder.setContentIntent(contentIntent);
+            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
+        }
     }
 }
