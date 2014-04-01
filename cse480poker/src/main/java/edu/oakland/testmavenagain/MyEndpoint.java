@@ -278,7 +278,8 @@ public class MyEndpoint {
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
-            String id = KeyFactory.keyToString(result.getKey());
+            String id = result.getKey().toString();
+			log.severe(id);
             players.add(id);
         }
 

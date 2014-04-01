@@ -54,6 +54,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private AtomicInteger msgId = new AtomicInteger();
 	private SharedPreferences prefs;
 	private Context context;
+	private OnUpdateFinish onUpdateFinish;
 
 	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
@@ -72,12 +73,13 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		setContentView(R.layout.activity_gameplay);
 
 		context = getApplicationContext();
+		onUpdateFinish = this;
 
 		// handle the button click for joining game
 		Button bet = (Button) findViewById(R.id.btnBet);
 		bet.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				//new DoSomethingAsync(endpoint, gcm, false,"").execute();
+				new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm).execute();
 			}
 		});
 
@@ -94,7 +96,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         }
 	}
 
-	public void onPlaceBetFinish(int bet) {
+	public void onPlaceBetFinish() {
+		Toast toast = Toast.makeText(this, "you placed a bet", Toast.LENGTH_SHORT);
+		toast.show();
 
 	}
 
@@ -106,8 +110,27 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		showBet.setText("Current bet: " + "100");
 
 		List<String> players = result.getPlayers();
+		String strPlayerMe = "zabador";
+		String strPlayer1 = "";
+		String strPlayer2 = "";
+		String strPlayer3 = "";
+		try {
+			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\""), players.get(0).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer1 = "No Player";
+		}
+		try {
+			strPlayer2 = players.get(1).substring(players.get(1).indexOf("\""), players.get(1).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer2 = "No Player";
+		}
+		try {
+			strPlayer3 = players.get(2).substring(players.get(2).indexOf("\""), players.get(2).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer3 = "No Player";
+		}
 
-		paintPlayers(currentTurn, 1, 2, players.get(0), "", "", "");
+		paintPlayers(currentTurn, 1, 2, strPlayerMe, strPlayer1, strPlayer2, strPlayer3);
 	}
 
 
