@@ -19,6 +19,7 @@ import com.google.appengine.api.users.User;
 import static com.google.api.server.spi.Constant.API_EXPLORER_CLIENT_ID;
 import edu.oakland.testmavenagain.GameLogic;
 
+import java.security.KeyStore;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,6 +202,8 @@ public class MyEndpoint {
             MyResult r = new MyResult();
             r.setGameState(map);
             log.severe(" map is " + r.getGameState().toString());
+
+			r.setPlayers(getAllPlayers());
             
 
             return r;
@@ -268,5 +271,17 @@ public class MyEndpoint {
         }
 
         return regIds;
+    }
+    // Reads all previously stored device tokens from the database
+    private ArrayList<String> getAllPlayers(){
+        ArrayList<String> players = new ArrayList<String>();
+        Query gaeQuery = new Query("Players");
+        PreparedQuery pq = datastore.prepare(gaeQuery);
+        for (Entity result : pq.asIterable()){
+            String id = KeyFactory.keyToString(result.getKey());
+            players.add(id);
+        }
+
+        return players;
     }
 }

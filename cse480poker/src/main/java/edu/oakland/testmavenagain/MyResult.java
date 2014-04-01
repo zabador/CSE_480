@@ -1,5 +1,6 @@
 package edu.oakland.testmavenagain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 public class MyResult {
     private String value;
     private HashMap<String, String> gameState;
+	private ArrayList<String> players;
 
     public MyResult(String value) {
         this.value = value;
@@ -36,5 +38,19 @@ public class MyResult {
      */
     public void setGameState(HashMap<String, String> gameState) {
         this.gameState = gameState;
-    }
+	}
+
+	/**
+	 * @return the players
+	 */
+	public ArrayList<String> getPlayers() {
+		return players;
+	}
+
+	/**
+	 * @param players the players to set
+	 */
+	public void setPlayers(ArrayList<String> players) {
+		this.players = players;
+	}
 }

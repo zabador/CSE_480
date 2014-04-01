@@ -2,6 +2,8 @@ package edu.oakland.cse480;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
-public class Gameplay extends Activity {
+
+public class Gameplay extends Activity implements OnUpdateFinish {
 	public ImageView card1;
 	public ImageView card2;
 	public ImageView tblC1, tblC2, tblC3, tblC4, tblC5;
@@ -50,7 +53,6 @@ public class Gameplay extends Activity {
 	private GoogleCloudMessaging gcm;
 	private AtomicInteger msgId = new AtomicInteger();
 	private SharedPreferences prefs;
-	private String regid;
 	private Context context;
 
 	// defind constants
@@ -75,7 +77,7 @@ public class Gameplay extends Activity {
 		Button bet = (Button) findViewById(R.id.btnBet);
 		bet.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				new DoSomethingAsync(endpoint, gcm, false,"").execute();
+				//new DoSomethingAsync(endpoint, gcm, false,"").execute();
 			}
 		});
 
@@ -85,12 +87,30 @@ public class Gameplay extends Activity {
 		boolean getGameState = true;
         MyResult r = null;
 		try {
-			new DoSomethingAsync(endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
+			new UpdateAsync(this, this, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
     
 		} catch (Exception ie) {
             Log.e("Erro", ""+ie.getMessage(), ie);
         }
 	}
+
+	public void onPlaceBetFinish(int bet) {
+
+	}
+
+	public void onGetGameStateFinish(MyResult result) {
+		Map<String, Object> map = result.getGameState();
+		String currentBet = (String)map.get("currentBet");
+		int currentTurn = Integer.parseInt((String)map.get("currentPosition"));
+		showBet = (TextView) findViewById(R.id.lblCurrentBet);
+		showBet.setText("Current bet: " + "100");
+
+		List<String> players = result.getPlayers();
+
+		paintPlayers(currentTurn, 1, 2, players.get(0), "", "", "");
+	}
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -105,7 +125,7 @@ public class Gameplay extends Activity {
 		//Integer conversions will take place in each method
 		myHand(hand1, hand2);
 		tableCards(card1, card2, card3, card4, card5);
-		showBet(bet);
+//		showBet(bet);
 	}
 	public void paintPlayers(int CurrentTurn, int SMblind, int BGblind, String strPlayerMe, String strplayer1, String strplayer2, String strplayer3){
 		nmP1 = (TextView) findViewById(R.id.txtPlayer1);
@@ -203,7 +223,7 @@ public class Gameplay extends Activity {
 			
 		myHand(i1, i2);
 		tableCards(i1,i2,i3,i4,i5);
-		showBet(intBet);
+//		showBet(intBet);
 		//Substitute values of 0 into the calls. It defaults to the ic_launcher image
 	}
 	
@@ -241,10 +261,6 @@ public class Gameplay extends Activity {
 	}
 	public void clickedFold(View view){
 		//Skye you'll need to enter your fold info in here
-	}
-	public void showBet(int intBet){
-		showBet = (TextView) findViewById(R.id.lblCurrentBet);
-		showBet.setText("Current bet: " + intBet);
 	}
 	
 	public void tableCards(int card1, int card2, int card3, int card4, int card5){
@@ -454,64 +470,5 @@ public class Gameplay extends Activity {
 		card2.setImageResource(resCard2);
     }
 
-	private class DoSomethingAsync extends AsyncTask<Void, Void, MyResult> {
-		private Myendpoint endpoint;
-		private GoogleCloudMessaging gcm;
-        private boolean getGameState;
-        private String accountName;
-
-		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm, boolean getGameState, String accountName) {
-			this.endpoint = endpoint;
-			this.gcm = gcm;
-            this.getGameState = getGameState;
-            this.accountName = accountName;
-		}
-
-		@Override
-		protected MyResult doInBackground(Void... params) {
-			try {
-				if (gcm == null) {
-					gcm = GoogleCloudMessaging.getInstance(context);
-				}
-				regid = gcm.register("699958132030");
-				Log.d("regid from app = ", regid);
-
-			} catch (IOException ex) {
-			}
-
-            if(getGameState) {
-                try {
-                    return endpoint.getGameState().execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    MyResult r = new MyResult();
-                    Log.e("error = ", e.getMessage(), e);
-                    r.setValue("EXCEPTION");
-                    return r;
-                }
-
-            }
-            else {
-                try {
-                    MyRequest r = new MyRequest();
-                    r.setBet(3);
-                    return endpoint.placeBet(r).execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    MyResult r = new MyResult();
-                    Log.e("error = ", e.getMessage(), e);
-                    r.setValue("EXCEPTION");
-                    return r;
-                }
-            }
-		}
-
-		@Override
-		protected void onPostExecute(MyResult r) {
-//            Log.i("map = ", ""+r.getGameState().toString());
-            Toast toast = Toast.makeText(context, r.getValue(), Toast.LENGTH_SHORT);
-            toast.show();
-		}
-	}
 }
 
