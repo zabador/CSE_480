@@ -46,22 +46,40 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult authenticate(MyRequest req, User user) {
-            Entity regId = new Entity("Players", user.getEmail());
-            regId.setProperty("regid", req.getRegId());
-            regId.setProperty("currentBet", 0);
-            regId.setProperty("fold", false);
-            regId.setProperty("handCards", "");
-            regId.setProperty("tokens", 100);
-            regId.setProperty("currentPosition", numberOfPlayers() + 1);
-            log.severe("CALLING");
-            if (user == null) {
-                return new MyResult("Login failed");
-            } else {
-                datastore.put(regId);
-
-                return new MyResult("Login Successful");
+            boolean addUser = true;
+            String player = null;
+            Query gaeQuery = new Query("Players");
+            PreparedQuery pq = datastore.prepare(gaeQuery);
+            for (Entity result : pq.asIterable()){
+                String id = (String) result.getKey().getName();
+                if (id.equals(user.getEmail())) {
+                    addUser = false;
+                    break;
+                }
             }
-        }
+            // only add user if they are not in the datastore
+            if (addUser) {
+                Entity regId = new Entity("Players", user.getEmail());
+                regId.setProperty("regid", req.getRegId());
+                regId.setProperty("currentBet", 0);
+                regId.setProperty("fold", false);
+                regId.setProperty("handCards", "");
+                regId.setProperty("tokens", 100);
+                regId.setProperty("currentPosition", numberOfPlayers() + 1);
+                log.severe("CALLING");
+                if (user == null) {
+                    return new MyResult("Login failed");
+                } else {
+                    datastore.put(regId);
+
+                    return new MyResult("Login Successful");
+                }
+            }
+            else 
+                return new MyResult("Already logged in");
+
+            }
+        
 
     private int numberOfPlayers() {
         Query gaeQuery = new Query("Players");
