@@ -107,16 +107,18 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		String currentBet = (String)map.get("currentBet");
 		int currentTurn = Integer.parseInt((String)map.get("currentPosition"));
 		showBet = (TextView) findViewById(R.id.lblCurrentBet);
-		showBet.setText("Current bet: " + "100");
+		showBet.setText("Current bet: " + currentBet);
 
 		List<String> players = result.getPlayers();
-		String strPlayerMe = "zabador";
+        // strip away last part of email address so we can just have a user name
+		String tmpStrPlayerMe = (String)map.get("me");
+        String strPlayerMe = tmpStrPlayerMe.substring(0, tmpStrPlayerMe.indexOf("@"));
 		String strPlayer1 = "";
 		String strPlayer2 = "";
 		String strPlayer3 = "";
 		try {
-			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\""), players.get(0).indexOf("@"));
-		}catch(Exception e) {
+			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\""), players.get(0).indexOf("@")); 
+        }catch(Exception e) {
 			strPlayer1 = "No Player";
 		}
 		try {
@@ -167,16 +169,16 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		for (int i = 0; i <4; i++){
 		switch(CurrentTurn){
 			case 1:
-				nmP1.setText(strplayer1 + "s turn");
+				nmP1.setText(strplayer1 + "'s turn");
 				break;
 			case 2:
-				nmP2.setText(strplayer2 + "s turn");
+				nmP2.setText(strplayer2 + "'s turn");
 				break;
 			case 3:
-				nmP3.setText(strplayer3 + "s turn");
+				nmP3.setText(strplayer3 + "'s turn");
 				break;
 			case 4:
-				nmP4.setText(strPlayerMe + "s turn");
+				nmP4.setText(strPlayerMe + "'s turn");
 				break;
 		}
 		}

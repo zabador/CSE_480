@@ -186,6 +186,7 @@ public class MyEndpoint {
                 Key key = KeyFactory.createKey("Players", user.getEmail());
                 entity = datastore.get(key);
                 // fill map with player specific items
+                map.put("me", user.getEmail());
                 map.put("tokens", Long.toString((Long)entity.getProperty("tokens")));
                 map.put("fold",String.valueOf((Boolean)entity.getProperty("fold")));
                 map.put("handCards",(String)entity.getProperty("handCards"));
@@ -221,7 +222,7 @@ public class MyEndpoint {
             r.setGameState(map);
             log.severe(" map is " + r.getGameState().toString());
 
-			r.setPlayers(getAllPlayers());
+			r.setPlayers(getAllPlayers(user.getEmail()));
             
 
             return r;
@@ -291,14 +292,18 @@ public class MyEndpoint {
         return regIds;
     }
     // Reads all previously stored device tokens from the database
-    private ArrayList<String> getAllPlayers(){
+    private ArrayList<String> getAllPlayers(String user){
         ArrayList<String> players = new ArrayList<String>();
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             String id = result.getKey().toString();
-			log.severe(id);
-            players.add(id);
+            log.severe("id = "+id);
+            log.severe("user = "+user);
+            if (!id.contains(user)) {
+                log.severe(id);
+                players.add(id);
+            }
         }
 
         return players;
