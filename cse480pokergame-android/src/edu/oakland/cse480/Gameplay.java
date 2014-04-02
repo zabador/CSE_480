@@ -72,7 +72,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gameplay);
 
-		context = getApplicationContext();
+		context = this;
 		onUpdateFinish = this;
 
 		// handle the button click for joining game

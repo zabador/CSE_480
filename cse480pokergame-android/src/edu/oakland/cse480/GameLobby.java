@@ -2,6 +2,7 @@ package edu.oakland.cse480;
 
 import java.io.IOException;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.accounts.AccountManager;
@@ -24,7 +25,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import android.util.Log;
 
@@ -61,7 +61,7 @@ public class GameLobby extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_lobby);
-		context = getApplicationContext();
+		context = this;
 
 		credential = GoogleAccountCredential.usingAudience(this,
                 "server:client_id:" + WEB_CLIENT_ID);
@@ -82,9 +82,9 @@ public class GameLobby extends Activity {
         Button join = (Button) findViewById(R.id.btnJoinGame);
         join.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-				new DoSomethingAsync(endpoint, gcm, true).execute();
+				new DoSomethingAsync(context, endpoint, gcm, true).execute();
                 Intent intent = new Intent(context, Gameplay.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
         });
@@ -143,7 +143,7 @@ public class GameLobby extends Activity {
 					if (accountName != null) {
 						credential.setSelectedAccountName(accountName);
                         Log.d("account name is ", credential.getSelectedAccountName());
-                        new DoSomethingAsync(endpoint, gcm, false).execute();
+                        new DoSomethingAsync(this, endpoint, gcm, false).execute();
 						// User is authorized.
 					}
 				}
@@ -273,26 +273,41 @@ public class GameLobby extends Activity {
 		private Myendpoint endpoint;
 		private GoogleCloudMessaging gcm;
         private boolean startGame;
+        private ProgressDialog dialog;
+        private Context mContext;
 
-		public DoSomethingAsync(Myendpoint endpoint, GoogleCloudMessaging gcm, boolean startGame) {
+		public DoSomethingAsync(Context mContext, Myendpoint endpoint, GoogleCloudMessaging gcm, boolean startGame) {
 			this.endpoint = endpoint;
 			this.gcm = gcm;
             this.startGame = startGame;
+            this.dialog = new ProgressDialog(mContext);
 		}
 
-		@Override
-		protected MyResult doInBackground(Void... params) {
-			try {
-				if (gcm == null) {
-					gcm = GoogleCloudMessaging.getInstance(context);
-				}
-				regid = gcm.register("699958132030");
-				Log.d("regid from app = ", regid);
+        /**
+         *
+         * Displays the progress dialog box
+         *
+         */
+        @Override
+        protected void onPreExecute()
+        {
+            dialog.setMessage("Authenticating");
+            dialog.show();
+        } 
 
-			} catch (IOException ex) {
-			}
+        @Override
+        protected MyResult doInBackground(Void... params) {
+            try {
+                if (gcm == null) {
+                    gcm = GoogleCloudMessaging.getInstance(context);
+                }
+                regid = gcm.register("699958132030");
+                Log.d("regid from app = ", regid);
 
-			try {
+            } catch (IOException ex) {
+            }
+
+            try {
                 if (!startGame) {
                     MyRequest r = new MyRequest();
                     r.setRegId(regid);
@@ -313,8 +328,9 @@ public class GameLobby extends Activity {
 
 		@Override
 		protected void onPostExecute(MyResult r) {
-            Toast toast = Toast.makeText(context, r.getValue(), Toast.LENGTH_SHORT);
-            toast.show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 		}
 	}
 }

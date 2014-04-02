@@ -6,6 +6,7 @@ import com.appspot.testmavenagain.myendpoint.model.MyResult;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,6 +21,7 @@ public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 	private OnUpdateFinish listener;
 	private String regid;
 	private Context context;
+    private ProgressDialog dialog;
 
 	public PlaceBetAsync(OnUpdateFinish listener, Context context, Myendpoint endpoint, GoogleCloudMessaging gcm) {
 		this.endpoint = endpoint;
@@ -28,7 +30,20 @@ public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 		this.accountName = accountName;
 		this.listener = listener;
 		this.context = context;
+        this.dialog = new ProgressDialog(context);
 	}
+
+   /**
+     *
+     * Displays the progress dialog box
+     *
+     */
+    @Override
+    protected void onPreExecute()
+    {
+        dialog.setMessage("Placing Bet");
+        dialog.show();
+    } 
 
 	@Override
 	protected MyResult doInBackground(Void... params) {
@@ -57,6 +72,9 @@ public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 
 	@Override
 	protected void onPostExecute(MyResult r) {
+        if(dialog.isShowing()) {
+            dialog.dismiss();
+        }
 		listener.onPlaceBetFinish();
 	}
 }

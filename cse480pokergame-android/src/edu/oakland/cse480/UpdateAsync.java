@@ -6,6 +6,7 @@ import com.appspot.testmavenagain.myendpoint.model.MyResult;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,20 +17,32 @@ public class UpdateAsync extends AsyncTask<Void, Void, MyResult> {
 	private Myendpoint endpoint;
 	private GoogleCloudMessaging gcm;
 	private boolean getGameState;
-	private String accountName;
 	private OnUpdateFinish listener;
 	private String regid;
 	private Context context;
+    private ProgressDialog dialog;
 
 	public UpdateAsync(OnUpdateFinish listener, Context context, Myendpoint endpoint, GoogleCloudMessaging gcm, boolean getGameState, String accountName) {
 		this.endpoint = endpoint;
 		this.gcm = gcm;
 		this.getGameState = getGameState;
-		this.accountName = accountName;
 		this.listener = listener;
 		this.context = context;
+        this.dialog = new ProgressDialog(context);
 	}
 
+   /**
+     *
+     * Displays the progress dialog box
+     *
+     */
+    @Override
+    protected void onPreExecute()
+    {
+        dialog.setTitle("Downloading Images");
+        dialog.setMessage("Loading...");
+        dialog.show();
+    } 
 	@Override
 	protected MyResult doInBackground(Void... params) {
 		try {
@@ -71,6 +84,10 @@ public class UpdateAsync extends AsyncTask<Void, Void, MyResult> {
 
 	@Override
 	protected void onPostExecute(MyResult r) {
+        if(dialog.isShowing()) {
+            dialog.dismiss();
+        }
+
 		listener.onGetGameStateFinish(r);
 	}
 }
