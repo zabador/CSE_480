@@ -39,8 +39,7 @@ public class UpdateAsync extends AsyncTask<Void, Void, MyResult> {
     @Override
     protected void onPreExecute()
     {
-        dialog.setTitle("Downloading Images");
-        dialog.setMessage("Loading...");
+        dialog.setMessage("Syncing...");
         dialog.show();
     } 
 	@Override

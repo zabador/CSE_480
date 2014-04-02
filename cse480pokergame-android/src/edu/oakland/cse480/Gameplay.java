@@ -3,6 +3,7 @@ package edu.oakland.cse480;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.HashMap;
@@ -133,6 +134,30 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		}
 
 		paintPlayers(currentTurn, 1, 2, strPlayerMe, strPlayer1, strPlayer2, strPlayer3);
+
+		// We need to swap the characters in the file name to match the files. The Poker api sends names like 8c, we need c8
+		String tempHandCards = (String)map.get("handCards");
+		Log.i("tempHandCards = ", ""+ tempHandCards);
+
+		String[] handCards = tempHandCards.split(" ");
+		String handCard1 = swap(handCards[1]); // handCards[0] is empty
+		String handCard2 = swap(handCards[2]);
+	
+		Log.i("first card = ", ""+ handCards[0]);
+
+		paintCards(handCard1, handCard2, "ic_launcher","ic_launcher","ic_launcher","ic_launcher","ic_launcher");
+		
+		
+	}
+
+	public String swap(String s) {
+
+		char[] tempCard = s.toCharArray();
+		char temp = tempCard[0];
+		tempCard[0] = tempCard[1];
+		tempCard[1] = temp;
+
+		return new String(tempCard).toLowerCase();
 	}
 
 
@@ -145,12 +170,11 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 //(Current turn, Not blind, bet amount, player count, cards in hand, cards on table)
 //Cards start with Ace, 2,3,4,5...
 //c is clubs, d is diamonds, h is hearts, s is spades. s2 for ace
-	public void paintCards (int bet, int hand1, int hand2, int card1, int card2, int card3, int card4, int card5 ){
+	public void paintCards (String hand1, String hand2, String card1, String card2, String card3, String card4, String card5 ){
 		//Will pull down cards and integers, and send off values to each as integers. 
 		//Integer conversions will take place in each method
 		myHand(hand1, hand2);
 		tableCards(card1, card2, card3, card4, card5);
-//		showBet(bet);
 	}
 	public void paintPlayers(int CurrentTurn, int SMblind, int BGblind, String strPlayerMe, String strplayer1, String strplayer2, String strplayer3){
 		nmP1 = (TextView) findViewById(R.id.txtPlayer1);
@@ -232,25 +256,6 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		}
 		
 	}
-	public void generateCards(View view){
-		//This button exists to test the card populators
-		
-		Random r = new Random();
-		int i1=r.nextInt(52-1) + 1;
-		int i2=r.nextInt(52-1) + 1;
-		int i3=r.nextInt(52-1) + 1;
-		int i4=r.nextInt(52-1) + 1;
-		int i5=r.nextInt(52-1) + 1;
-		int i6=r.nextInt(5-1) + 1;
-		int i7=r.nextInt(5-1) + 1;
-		int i8=r.nextInt(5-1) + 1;
-		paintPlayers(i6, i7, i8, "Geoff", "Tara", "Mike", "Jon");
-			
-		myHand(i1, i2);
-		tableCards(i1,i2,i3,i4,i5);
-//		showBet(intBet);
-		//Substitute values of 0 into the calls. It defaults to the ic_launcher image
-	}
 	
 	public void clickedBet(View view){
 		//For now, do nothing. Eventually a prompt box
@@ -288,207 +293,32 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		//Skye you'll need to enter your fold info in here
 	}
 	
-	public void tableCards(int card1, int card2, int card3, int card4, int card5){
-		String c1, c2, c3, c4, c5;
-		c1 = decodeCards(card1);
-		c2 = decodeCards(card2);
-		c3 = decodeCards(card3);
-		c4 = decodeCards(card4);
-		c5 = decodeCards(card5);
-		
-		int tblCard1 = getResources().getIdentifier(c1, "drawable", getPackageName());
+	public void tableCards(String flopCard1, String flopCard2, String flopCard3, String turnCard, String riverCard){
+		int tblCard1 = getResources().getIdentifier(flopCard1, "drawable", getPackageName());
 		tblC1 = (ImageView) findViewById(R.id.imgTable1);
 		tblC1.setImageResource(tblCard1);
 		
-		int tblCard2 = getResources().getIdentifier(c2, "drawable", getPackageName());
+		int tblCard2 = getResources().getIdentifier(flopCard2, "drawable", getPackageName());
 		tblC2 = (ImageView) findViewById(R.id.imgTable2);
 		tblC2.setImageResource(tblCard2);
 		
-		int tblCard3 = getResources().getIdentifier(c3, "drawable", getPackageName());
+		int tblCard3 = getResources().getIdentifier(flopCard3, "drawable", getPackageName());
 		tblC3 = (ImageView) findViewById(R.id.imgTable3);
 		tblC3.setImageResource(tblCard3);
 		
-		int tblCard4 = getResources().getIdentifier(c4, "drawable", getPackageName());
+		int tblCard4 = getResources().getIdentifier(turnCard, "drawable", getPackageName());
 		tblC4 = (ImageView) findViewById(R.id.imgTable4);
 		tblC4.setImageResource(tblCard4);
 		
-		int tblCard5 = getResources().getIdentifier(c5, "drawable", getPackageName());
+		int tblCard5 = getResources().getIdentifier(riverCard, "drawable", getPackageName());
 		tblC5 = (ImageView) findViewById(R.id.imgTable5);
 		tblC5.setImageResource(tblCard5);
 		
 	}
-
-	public String decodeCards(int cardNum){
-		String cardValue;
-		switch(cardNum) {
-	    case 1:
-	        cardValue = "c1";
-	        break;
-	    case 2:
-	        cardValue = "c2";
-	        break;
-	    case 3:
-	        cardValue = "c3";
-	        break;
-	    case 4:
-	        cardValue = "c4";
-	        break;
-	    case 5:
-	        cardValue = "c5";
-	        break;
-	    case 6:
-	        cardValue = "c6";
-	        break;
-	    case 7:
-	        cardValue = "c7";
-	        break;
-	    case 8:
-	        cardValue = "c8";
-	        break;
-	    case 9:
-	        cardValue = "c9";
-	        break;
-	    case 10:
-	        cardValue = "c10";
-	        break;
-	    case 11:
-	        cardValue = "cj";
-	        break;
-	    case 12:
-	        cardValue = "cq";
-	        break;
-	    case 13:
-	        cardValue = "ck";
-	        break;
-	    case 14:
-	        cardValue = "d1";
-	        break;
-	    case 15:
-	        cardValue = "d2";
-	        break;
-	    case 16:
-	        cardValue = "d3";
-	        break;
-	    case 17:
-	        cardValue = "d4";
-	        break;
-	    case 18:
-	        cardValue = "d5";
-	        break;
-	    case 19:
-	        cardValue = "d6";
-	        break;
-	    case 20:
-	        cardValue = "d7";
-	        break;
-	    case 21:
-	        cardValue = "d8";
-	        break;
-	    case 22:
-	        cardValue = "d9";
-	        break;
-	    case 23:
-	        cardValue = "d10";
-	        break;
-	    case 24:
-	        cardValue = "dj";
-	        break;
-	    case 25:
-	        cardValue = "dq";
-	        break;
-	    case 26:
-	        cardValue = "dk";
-	        break;
-	    case 27:
-	        cardValue = "h1";
-	        break;
-	    case 28:
-	        cardValue = "h2";
-	        break;
-	    case 29:
-	        cardValue = "h3";
-	        break;
-	    case 30:
-	        cardValue = "h4";
-	        break;
-	    case 31:
-	        cardValue = "h5";
-	        break;
-	    case 32:
-	        cardValue = "h6";
-	        break;
-	    case 33:
-	        cardValue = "h7";
-	        break;
-	    case 34:
-	        cardValue = "h8";
-	        break;
-	    case 35:
-	        cardValue = "h9";
-	        break;
-	    case 36:
-	        cardValue = "h10";
-	        break;
-	    case 37:
-	        cardValue = "hj";
-	        break;
-	    case 38:
-	        cardValue = "hq";
-	        break;
-	    case 39:
-	        cardValue = "hk";
-	        break;
-	    case 40:
-	        cardValue = "s1";
-	        break;
-	    case 41:
-	        cardValue = "s2";
-	        break;
-	    case 42:
-	        cardValue = "s3";
-	        break;
-	    case 43:
-	        cardValue = "s4";
-	        break;
-	    case 44:
-	        cardValue = "s5";
-	        break;
-	    case 45:
-	        cardValue = "s6";
-	        break;
-	    case 46:
-	        cardValue = "s7";
-	        break;
-	    case 47:
-	        cardValue = "s8";
-	        break;
-	    case 48:
-	        cardValue = "s9";
-	        break;
-	    case 49:
-	        cardValue = "s10";
-	        break;
-	    case 50:
-	        cardValue = "sj";
-	        break;
-	    case 51:
-	        cardValue = "sq";
-	        break;
-	    case 52:
-	        cardValue = "sk";
-	        break;
-	    default:
-	        cardValue = "ic_launcher";
-	}
-		return cardValue;
-		}
 	
-	public void myHand(int card1int, int card2int){
-		String card1string, card2string;
-		card1string = decodeCards(card1int);
-		card2string = decodeCards(card2int);
-		int resCard1 = getResources().getIdentifier(card1string, "drawable", getPackageName());
-		int resCard2 = getResources().getIdentifier(card2string, "drawable", getPackageName());
+	public void myHand(String handCard1, String handCard2){
+		int resCard1 = getResources().getIdentifier(handCard1, "drawable", getPackageName());
+		int resCard2 = getResources().getIdentifier(handCard2, "drawable", getPackageName());
 		card1 = (ImageView) findViewById(R.id.card1spot);
 		card1.setImageResource(resCard1);
 		card2 = (ImageView) findViewById(R.id.card2spot);
