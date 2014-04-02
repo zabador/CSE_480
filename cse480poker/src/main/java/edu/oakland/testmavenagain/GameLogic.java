@@ -37,18 +37,18 @@ public class GameLogic {
         Hand [] playerHand = new Hand[playersList.size()];  
 
         // initialize the flop to store in the datastore
-        Card[] flop = new Card[3];
+    	Hand flop = new Hand();
         for (int i=0; i<3; i++) {
-            flop[i] = deck.deal();
+            flop.addCard(deck.deal());
         }
 
         // initialize the turn to store in the datastore
-        Card[] turn = new Card[1];
-        turn[0] = deck.deal();
+        Hand turn = new Hand();
+        turn.addCard(deck.deal());
 
         // initialize the river to store in the datastore
-        Card[] river = new Card[1];
-        river[0] = deck.deal();
+        Hand river = new Hand();
+        river.addCard(deck.deal());
 
         Entity game = new Entity("GameState", "currentGame");
         game.setProperty("currentplayer", 1);
@@ -71,7 +71,7 @@ public class GameLogic {
         }
 
         MyEndpoint endpoint = new MyEndpoint();
-        endpoint.sendNotification(new MyRequest(playersList.get(0), PLACEBET));
+        endpoint.sendNotification(new MyRequest(getCurrentPlayer(1), PLACEBET));
 
     }
 

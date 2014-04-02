@@ -137,15 +137,56 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 
 		// We need to swap the characters in the file name to match the files. The Poker api sends names like 8c, we need c8
 		String tempHandCards = (String)map.get("handCards");
+		String tempFlop = (String)map.get("flop");
+		String tempTurn = (String)map.get("turn");
+		String tempRiver = (String)map.get("river");
+
 		Log.i("tempHandCards = ", ""+ tempHandCards);
 
-		String[] handCards = tempHandCards.split(" ");
-		String handCard1 = swap(handCards[1]); // handCards[0] is empty
-		String handCard2 = swap(handCards[2]);
+		// swap hand cards to match file name
+		String[] handCards = tempHandCards.trim().split(" ");
+		String handCard1 = swap(handCards[0]); 
+		String handCard2 = swap(handCards[1]);
 	
-		Log.i("first card = ", ""+ handCards[0]);
+		Log.i("flopCards = ", ""+ tempFlop);
+		String[] flopCards = tempFlop.trim().split(" ");
+		String flop1;
+		String flop2;
+		String flop3;
+		String turn;
+		String river;
+		
+		if(flopCards[0].equals("ic_launcher")) {
+			flop1 = flopCards[0];  // keep it as ic_launcher
+			flop2 = flopCards[0];
+			flop3 = flopCards[0];
+		}
+		else {
+			// swap flop cards to match file name
+			flop1 = swap(flopCards[0]); 
+			flop2 = swap(flopCards[1]);
+			flop3 = swap(flopCards[2]);
+		}
 
-		paintCards(handCard1, handCard2, "ic_launcher","ic_launcher","ic_launcher","ic_launcher","ic_launcher");
+		String turnCard = tempTurn.trim();
+		if(turnCard.equals("ic_launcher")) {
+			turn = turnCard; 
+		}
+		else {
+			// swap turn card to match file name
+			turn = swap(turnCard); 
+		}
+
+		String riverCard = tempRiver.trim();
+		if(turnCard.equals("ic_launcher")) {
+			river = riverCard; 
+		}
+		else {
+			// swap river card to match file name
+			river = swap(riverCard); 
+		}
+
+		paintCards(handCard1, handCard2, flop1, flop2, flop3, turn, river);
 		
 		
 	}

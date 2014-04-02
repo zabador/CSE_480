@@ -111,7 +111,7 @@ public class MyEndpoint {
                     log.severe("not empty");
 
                     @SuppressWarnings("unused")
-                    MulticastResult result = sender.send(message, devices, 1);
+                    MulticastResult result = sender.send(message, devices, 5);
                 }
 
             }catch(IOException e) {
@@ -199,10 +199,13 @@ public class MyEndpoint {
                 map.put("currentPlayer",(String)entity.getProperty("currentPlayer"));
                 if ((Boolean)entity.getProperty("flopBets")) {
                     map.put("flop",(String)entity.getProperty("flop"));
+                    map.put("turn","ic_launcher");
+                    map.put("river","ic_launcher");
                 }
                 else if ((Boolean)entity.getProperty("turnBets")) {
                     map.put("flop",(String)entity.getProperty("flop"));
                     map.put("turn",(String)entity.getProperty("turn"));
+                    map.put("river","ic_launcher");
                 }
                 else if ((Boolean)entity.getProperty("riverBets")) {
                     map.put("flop",(String)entity.getProperty("flop"));
@@ -239,7 +242,7 @@ public class MyEndpoint {
                     log.severe("not empty");
 
                     @SuppressWarnings("unused")
-                    MulticastResult result = sender.send(message, devices, 1);
+                    MulticastResult result = sender.send(message, devices, 5);
                 }
 
             }catch(IOException e) {
@@ -272,7 +275,7 @@ public class MyEndpoint {
 
             try { 
                 @SuppressWarnings("unused")
-                MulticastResult result = sender.send(message, user, 1);
+                MulticastResult result = sender.send(message, user, 5);
                 log.severe("past sent");
             }catch(IOException e) {
                 log.severe("IOException " + e.getCause());
