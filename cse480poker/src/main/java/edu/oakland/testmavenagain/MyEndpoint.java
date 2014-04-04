@@ -196,7 +196,7 @@ public class MyEndpoint {
                 // mill map with gamestate items
                 key = KeyFactory.createKey("GameState", "currentGame");
                 entity = datastore.get(key);
-                map.put("currentPlayer",(String)entity.getProperty("currentPlayer"));
+                map.put("currentPlayer",Long.toString((Long)entity.getProperty("currentplayer")));
                 if ((Boolean)entity.getProperty("flopBets")) {
                     map.put("flop",(String)entity.getProperty("flop"));
                     map.put("turn","ic_launcher");

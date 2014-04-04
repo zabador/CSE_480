@@ -22,6 +22,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -145,11 +146,16 @@ public class GCMIntentService extends IntentService {
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Poker Notification")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(msg))
+                .bigText(msg))
                 .setContentText(msg);
 
             mBuilder.setContentIntent(contentIntent);
-            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            Notification notification = mBuilder.build();
+            notification.defaults |= Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND
+                | Notification.DEFAULT_VIBRATE;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
+
+            mNotificationManager.notify(NOTIFICATION_ID, notification);
 
         }
     }

@@ -94,7 +94,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 
 	public void onPlaceBetFinish() {
         
-        btnBet.setVisibility(View.VISIBLE);
+        btnBet.setVisibility(View.INVISIBLE);
 		Toast toast = Toast.makeText(this, "you placed a bet", Toast.LENGTH_SHORT);
 		toast.show();
 
