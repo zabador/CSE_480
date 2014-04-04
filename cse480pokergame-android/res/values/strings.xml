@@ -8,7 +8,7 @@
     <string name="title_activity_gameplay">Gameplay</string>
     <string name="card2descrip">Spot for card 2</string>
     <string name="card1descrip">Spot for card 1</string>
-    <string name="btngenerateCards">Generate Cards</string>
+    <string name="update">Update</string>
     <string name="lblYourhand">Your Hand</string>
     <string name="strBetbtn">Bet</string>
     <string name="lblCurrentBet">"Current Bet: "</string>

@@ -131,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/txtPlayer3"
-        android:layout_alignRight="@+id/generatecard"
+        android:layout_alignRight="@+id/update"
         android:layout_below="@+id/txtPlayer1"
         android:layout_marginTop="32dp"
         android:text="@string/lblPlayer2"
@@ -171,7 +171,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/lblPlayer2Blind"
-        android:layout_alignRight="@+id/generatecard"
+        android:layout_alignRight="@+id/update"
         android:layout_centerVertical="true"
         android:text="@string/lblPlayer3"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -181,19 +181,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_above="@+id/generatecard"
+        android:layout_above="@+id/update"
         android:layout_centerVertical="true"
         android:text="testing"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/generatecard"
+        android:id="@+id/update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/txtPlayerMe"
         android:layout_alignParentRight="true"
         android:gravity="left"
-        android:text="@string/btngenerateCards" />
+        android:text="@string/update" />
 
     <TextView
         android:id="@+id/lblYourBlind"
@@ -209,7 +209,7 @@
         android:id="@+id/lblPlayer3Blind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/generatecard"
+        android:layout_above="@+id/update"
         android:layout_alignLeft="@+id/txtPlayer3"
         android:layout_marginBottom="15dp"
         android:text="@string/lblNotBlind"

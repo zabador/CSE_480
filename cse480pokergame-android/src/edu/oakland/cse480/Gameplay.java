@@ -55,6 +55,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private Context context;
 	private OnUpdateFinish onUpdateFinish;
     private Button btnBet;
+    private Button btnUpdate;
 
 	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
@@ -79,13 +80,20 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 			}
 		});
 
+		final boolean getGameState = true;
+		btnUpdate = (Button) findViewById(R.id.update);
+		btnUpdate.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+                new UpdateAsync(onUpdateFinish, context, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
+			}
+		});
+
 		endpoint = CredentialHack.endpoint;
         credential = CredentialHack.credential;
 
-		boolean getGameState = true;
         MyResult r = null;
 		try {
-			new UpdateAsync(this, this, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
+			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
     
 		} catch (Exception ie) {
             Log.e("Erro", ""+ie.getMessage(), ie);
@@ -136,17 +144,17 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		String strPlayer2 = "";
 		String strPlayer3 = "";
 		try {
-			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\""), players.get(0).indexOf("@")); 
+			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\"")+1, players.get(0).indexOf("@")); 
         }catch(Exception e) {
 			strPlayer1 = "No Player";
 		}
 		try {
-			strPlayer2 = players.get(1).substring(players.get(1).indexOf("\""), players.get(1).indexOf("@"));
+			strPlayer2 = players.get(1).substring(players.get(1).indexOf("\"")+1, players.get(1).indexOf("@"));
 		}catch(Exception e) {
 			strPlayer2 = "No Player";
 		}
 		try {
-			strPlayer3 = players.get(2).substring(players.get(2).indexOf("\""), players.get(2).indexOf("@"));
+			strPlayer3 = players.get(2).substring(players.get(2).indexOf("\"")+1, players.get(2).indexOf("@"));
 		}catch(Exception e) {
 			strPlayer3 = "No Player";
 		}
