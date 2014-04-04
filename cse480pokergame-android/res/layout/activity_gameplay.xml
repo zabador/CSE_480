@@ -36,6 +36,7 @@
         android:layout_toRightOf="@+id/card2spot"
         android:gravity="center|left"
         android:onClick="clickedBet"
+        android:visibility="invisible"
         android:text="@string/strBetbtn" />
 
     <ImageView

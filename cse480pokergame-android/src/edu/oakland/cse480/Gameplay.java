@@ -52,18 +52,13 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private String betText = "";
 	public int intBet = 0;
 	private GoogleCloudMessaging gcm;
-	private AtomicInteger msgId = new AtomicInteger();
-	private SharedPreferences prefs;
 	private Context context;
 	private OnUpdateFinish onUpdateFinish;
+    private Button btnBet;
 
 	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
-	private static final String PROPERTY_APP_VERSION = "appVersion";
-	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	private static final String TAG = "poker";
-	private final String SENDER_ID = "699958132030";
 
 	private Myendpoint endpoint;
 	private GoogleAccountCredential credential;
@@ -77,8 +72,8 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		onUpdateFinish = this;
 
 		// handle the button click for joining game
-		Button bet = (Button) findViewById(R.id.btnBet);
-		bet.setOnClickListener(new OnClickListener() {
+		btnBet = (Button) findViewById(R.id.btnBet);
+		btnBet.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm).execute();
 			}
@@ -98,19 +93,42 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	}
 
 	public void onPlaceBetFinish() {
+        
+        btnBet.setVisibility(View.VISIBLE);
 		Toast toast = Toast.makeText(this, "you placed a bet", Toast.LENGTH_SHORT);
 		toast.show();
 
 	}
 
 	public void onGetGameStateFinish(MyResult result) {
+
+        // pull information out of parameter 
 		Map<String, Object> map = result.getGameState();
+		int currentTurn = Integer.parseInt((String)map.get("currentPlayer"));
+		List<String> players = result.getPlayers();
+
+        // take care of player and card information
+        handlePlayers(map, players, currentTurn);
+        handleCards(map);
+
+        // display current bet on screen
 		String currentBet = (String)map.get("currentBet");
-		int currentTurn = Integer.parseInt((String)map.get("currentPosition"));
 		showBet = (TextView) findViewById(R.id.lblCurrentBet);
 		showBet.setText("Current bet: " + currentBet);
 
-		List<String> players = result.getPlayers();
+        // only disply bet button when it is players turn
+        int myTurn = Integer.parseInt((String)map.get("currentPosition"));
+        if (myTurn == currentTurn) {
+            btnBet.setVisibility(View.VISIBLE);
+        }
+	}
+
+    /** 
+     * Method will handle players information returning from 
+     * server so it can be painted to screen
+     */
+    public void handlePlayers(Map<String, Object> map, List<String> players, int currentTurn) {
+
         // strip away last part of email address so we can just have a user name
 		String tmpStrPlayerMe = (String)map.get("me");
         String strPlayerMe = tmpStrPlayerMe.substring(0, tmpStrPlayerMe.indexOf("@"));
@@ -134,6 +152,13 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		}
 
 		paintPlayers(currentTurn, 1, 2, strPlayerMe, strPlayer1, strPlayer2, strPlayer3);
+    }
+
+    /** 
+     * Method will handle card information returning from 
+     * server so it can be painted to screen
+     */
+    public void handleCards(Map<String,Object> map) {
 
 		// We need to swap the characters in the file name to match the files. The Poker api sends names like 8c, we need c8
 		String tempHandCards = (String)map.get("handCards");
@@ -187,9 +212,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		}
 
 		paintCards(handCard1, handCard2, flop1, flop2, flop3, turn, river);
-		
-		
-	}
+    }
 
 	public String swap(String s) {
 
