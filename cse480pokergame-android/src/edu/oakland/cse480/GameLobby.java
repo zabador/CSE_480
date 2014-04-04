@@ -78,11 +78,21 @@ public class GameLobby extends Activity {
         endpoint = CloudEndpointUtils.updateBuilder(endpointBuilder).build();
         CredentialHack.endpoint = endpoint;
 
+        // handle the button click for starting game
+        Button start = (Button) findViewById(R.id.btnStartGame);
+        start.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+				new DoSomethingAsync(context, endpoint, gcm, true).execute();
+                Intent intent = new Intent(context, Gameplay.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+
         // handle the button click for joining game
         Button join = (Button) findViewById(R.id.btnJoinGame);
         join.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-				new DoSomethingAsync(context, endpoint, gcm, true).execute();
                 Intent intent = new Intent(context, Gameplay.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);

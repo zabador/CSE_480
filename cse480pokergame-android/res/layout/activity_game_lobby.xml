@@ -10,11 +10,23 @@
     android:background="#0047AB">
 
     <Button
-        android:id="@+id/btnJoinGame"
+        android:id="@+id/btnStartGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="26dp"
+        android:text="@string/startGamestring"
+        android:background="#00FF00" />
+
+    <Button
+        android:id="@+id/btnJoinGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/btnStartGame"
         android:layout_marginLeft="38dp"
         android:layout_marginTop="26dp"
         android:text="@string/joinGamestring"
@@ -25,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/btnJoinGame"
-        android:layout_below="@+id/btnJoinGame"
+        android:layout_below="@+id/btnStartGame"
         android:layout_marginTop="100dp"
         android:background="#00FF00"
         android:text="@string/login" />
