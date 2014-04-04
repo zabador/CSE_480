@@ -15,6 +15,7 @@
    <uses-permission android:name="android.permission.WAKE_LOCK"/>
    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+   <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -22,7 +23,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="edu.oakland.cse480.GameLobby"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,7 +45,8 @@
         
         <activity
             android:name="edu.oakland.cse480.Gameplay"
-            android:label="@string/title_activity_gameplay" >
+            android:label="@string/title_activity_gameplay" 
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 		<receiver
