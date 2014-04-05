@@ -1,0 +1,218 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00FF00"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Gameplay" >
+
+    <ImageView
+        android:id="@+id/card1spot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/card2spot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card1spot"
+        android:layout_toRightOf="@+id/lblyourhand"
+        android:contentDescription="@string/card2descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <Button
+        android:id="@+id/btnBet"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card2spot"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/card2spot"
+        android:gravity="center|left"
+        android:onClick="clickedBet"
+        android:visibility="invisible"
+        android:text="@string/strBetbtn" />
+
+    <ImageView
+        android:id="@+id/imgTable1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/imgTable2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgTable1"
+        android:layout_toRightOf="@+id/imgTable1"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/imgTable3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgTable2"
+        android:layout_toRightOf="@+id/imgTable2"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/imgTable4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgTable3"
+        android:layout_toRightOf="@+id/imgTable3"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/imgTable5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgTable4"
+        android:layout_toRightOf="@+id/imgTable4"
+        android:contentDescription="@string/card1descrip"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/lblyourhand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/card1spot"
+        android:layout_alignLeft="@+id/card1spot"
+        android:text="@string/lblYourhand"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblCurrentBet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imgTable1"
+        android:layout_below="@+id/imgTable1"
+        android:text="@string/lblCurrentBet"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/btnFold"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/btnBet"
+        android:layout_marginRight="39dp"
+        android:layout_toRightOf="@+id/imgTable4"
+        android:gravity="center|left"
+        android:onClick="clickedFold"
+        android:text="@string/strFold" />
+
+    <TextView
+        android:id="@+id/txtPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtPlayer2"
+        android:layout_alignRight="@+id/btnFold"
+        android:layout_below="@+id/lblCurrentBet"
+        android:layout_marginTop="22dp"
+        android:text="@string/lblPlayer1"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtPlayer2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtPlayer3"
+        android:layout_alignRight="@+id/update"
+        android:layout_below="@+id/txtPlayer1"
+        android:layout_marginTop="32dp"
+        android:text="@string/lblPlayer2"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/lblPlayer1Blind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblCurrentBet"
+        android:layout_alignRight="@+id/imgTable5"
+        android:layout_below="@+id/txtPlayer1"
+        android:text="@string/lblNotBlind"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPlayer2Blind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblPlayer1Blind"
+        android:layout_alignRight="@+id/lblPlayer1Blind"
+        android:layout_below="@+id/txtPlayer2"
+        android:text="@string/lblNotBlind"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/txtPlayerMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lblYourBlind"
+        android:layout_alignLeft="@+id/lblyourhand"
+        android:text="@string/lblPlayerMe"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtPlayer3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lblPlayer2Blind"
+        android:layout_alignRight="@+id/update"
+        android:layout_centerVertical="true"
+        android:text="@string/lblPlayer3"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/update"
+        android:layout_centerVertical="true"
+        android:text="testing"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtPlayerMe"
+        android:layout_alignParentRight="true"
+        android:gravity="left"
+        android:text="@string/update" />
+
+    <TextView
+        android:id="@+id/lblYourBlind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lblyourhand"
+        android:layout_alignLeft="@+id/lblyourhand"
+        android:layout_alignRight="@+id/imgTable2"
+        android:text="@string/lblNotBlind"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/lblPlayer3Blind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/update"
+        android:layout_alignLeft="@+id/txtPlayer3"
+        android:layout_marginBottom="15dp"
+        android:text="@string/lblNotBlind"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
