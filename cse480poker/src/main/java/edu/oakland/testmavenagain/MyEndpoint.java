@@ -352,10 +352,19 @@ public class MyEndpoint {
         ArrayList<String> players = new ArrayList<String>();
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
-        for (Entity result : pq.asIterable()){
-            String id = result.getKey().toString();
-            log.severe(id);
-            players.add(id);
+        int numberOfPlayers = numberOfPlayers();
+
+        // TODO do this better than O(n^2)
+        // will return players in postion order
+        for (int i = 1; i <= numberOfPlayers; i++ ) {
+            for (Entity result : pq.asIterable()){
+                String id = result.getKey().toString();
+                if (((Long)(result.getProperty("currentPosition"))).intValue() == i) {
+                    players.add(id);
+                    break;
+                }
+            }
+
         }
 
         return players;
