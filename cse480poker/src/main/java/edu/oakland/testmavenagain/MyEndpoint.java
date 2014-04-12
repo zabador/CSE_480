@@ -249,6 +249,8 @@ public class MyEndpoint {
                 key = KeyFactory.createKey("GameState", "currentGame");
                 entity = datastore.get(key);
                 map.put("currentPlayer",Long.toString((Long)entity.getProperty("currentplayer")));
+                map.put("highestBet",Long.toString((Long)entity.getProperty("highestbet")));
+                map.put("pot",Long.toString((Long)entity.getProperty("pot")));
                 if ((Boolean)entity.getProperty("flopBets")) {
                     map.put("flop",(String)entity.getProperty("flop"));
                     map.put("turn","ic_launcher");
