@@ -47,7 +47,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	public ImageView card1;
 	public ImageView card2;
 	public ImageView tblC1, tblC2, tblC3, tblC4, tblC5;
-	public TextView showBet;
+	public TextView currentBet, pot, lblToCall, tokens;
 	public TextView nmP1, nmP2, nmP3, nmP4, nmP5, nmP6;
 	public TextView B1, B2, B3, B4;
 	private String betText = "";
@@ -121,10 +121,21 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         handleCards(map);
 
         // display current bet on screen
-		String currentBet = (String)map.get("currentBet");
-		showBet = (TextView) findViewById(R.id.lblCurrentBet);
-		showBet.setText("Current bet: " + currentBet);
+		String strHighestBet = (String)map.get("highestBet");
+		currentBet = (TextView) findViewById(R.id.lblCurrentBet);
+		currentBet.setText("Current bet: " + strHighestBet);
 
+		String strPot = (String)map.get("pot");
+		pot = (TextView) findViewById(R.id.lblPot);
+		pot.setText("Pot: " + strPot);
+
+		int toCall = Integer.parseInt((String)map.get("highestBet")) - Integer.parseInt((String)map.get("currentBet"));
+		lblToCall = (TextView) findViewById(R.id.lblToCall);
+		lblToCall.setText("To Call: " + Integer.toString(toCall));
+
+		String strTokens = (String)map.get("tokens");
+		tokens = (TextView) findViewById(R.id.lblTokens);
+		tokens.setText("Tokens: " + strTokens);
         // only disply bet button when it is players turn
         int myTurn = Integer.parseInt((String)map.get("currentPosition"));
         if (myTurn == currentTurn) {

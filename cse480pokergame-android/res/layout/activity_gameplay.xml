@@ -24,44 +24,54 @@
             android:id="@+id/imgTable1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/card1descrip"
             android:src="@drawable/ic_launcher" />
 
         <ImageView
             android:id="@+id/imgTable2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/card1descrip"
             android:src="@drawable/ic_launcher" />
 
         <ImageView
             android:id="@+id/imgTable3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/card1descrip"
             android:src="@drawable/ic_launcher" />
 
         <ImageView
             android:id="@+id/imgTable4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/card1descrip"
             android:src="@drawable/ic_launcher" />
 
         <ImageView
             android:id="@+id/imgTable5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/card1descrip"
             android:src="@drawable/ic_launcher" />
         </LinearLayout>
-        
-        <TextView
-            android:id="@+id/lblCurrentBet"
+
+        <LinearLayout
+            android:id="@+id/betAndPotStates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lblCurrentBet"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:orientation="horizontal" >
+            
+            <TextView
+                android:id="@+id/lblCurrentBet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lblCurrentBet"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/lblPot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lblPot"
+                android:layout_marginLeft="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </LinearLayout>
                
        <LinearLayout
         android:id="@+id/playerlayout"
@@ -121,30 +131,52 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 		    
+           <LinearLayout
+            android:id="@+id/currentBettingState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
 		    <TextView
         android:id="@+id/lblyourhand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lblYourhand"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		    <TextView
+        android:id="@+id/lblToCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lblToCall"
+        android:layout_marginLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+		    <TextView
+        android:id="@+id/lblTokens"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lblTokens"
+        android:layout_marginLeft="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+             </LinearLayout>
               
 	              <LinearLayout
 	        android:id="@+id/playercardslayout"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
+            android:layout_marginBottom="2dp"
 	        android:orientation="horizontal" >
 					    <ImageView
 			        android:id="@+id/card1spot"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:contentDescription="@string/card1descrip"
 			        android:src="@drawable/ic_launcher" />
 			
 			    		<ImageView
 			        android:id="@+id/card2spot"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:contentDescription="@string/card2descrip"
 			        android:src="@drawable/ic_launcher" />
 	             </LinearLayout>
 	             

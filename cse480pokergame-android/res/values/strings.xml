@@ -7,12 +7,13 @@
     <string name="joinGamestring">Join Game</string>
     <string name="startGamestring">Start Game</string>
     <string name="title_activity_gameplay">Gameplay</string>
-    <string name="card2descrip">Spot for card 2</string>
-    <string name="card1descrip">Spot for card 1</string>
     <string name="update">Update</string>
     <string name="lblYourhand">Your Hand</string>
     <string name="strBetbtn">Bet</string>
     <string name="lblCurrentBet">"Current Bet: "</string>
+    <string name="lblPot">"Pot: "</string>
+    <string name="lblToCall">"To Call: "</string>
+    <string name="lblTokens">"Tokens: "</string>
     <string name="strFold">Fold</string>
     <string name="lblNoPlayer">No Player</string>
     <string name="lblNotBlind">Not Blind</string>
