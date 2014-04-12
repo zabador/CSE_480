@@ -11,6 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical" >
         
         <LinearLayout
@@ -72,20 +73,38 @@
                android:id="@+id/txtPlayer1"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="@string/lblPlayer1"
+               android:text="@string/lblNoPlayer"
                android:textAppearance="?android:attr/textAppearanceMedium" />
 
            <TextView
                android:id="@+id/txtPlayer2"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="@string/lblPlayer2"
+               android:text="@string/lblNoPlayer"
+               android:textAppearance="?android:attr/textAppearanceMedium" /> 
+           <TextView
+               android:id="@+id/txtPlayer3"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/lblNoPlayer"
+               android:textAppearance="?android:attr/textAppearanceMedium" /> 
+           <TextView
+               android:id="@+id/txtPlayer4"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/lblNoPlayer"
+               android:textAppearance="?android:attr/textAppearanceMedium" /> 
+           <TextView
+               android:id="@+id/txtPlayer5"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/lblNoPlayer"
                android:textAppearance="?android:attr/textAppearanceMedium" /> 
 		    <TextView
-		        android:id="@+id/txtPlayer3"
+		        android:id="@+id/txtPlayer6"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="@string/lblPlayer3"
+                android:text="@string/lblNoPlayer"
 		        android:textAppearance="?android:attr/textAppearanceMedium"
 		        android:layout_marginBottom="2dp" />
 		    
@@ -101,14 +120,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-		    
-		    
-		    <TextView
-        android:id="@+id/txtPlayerMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lblPlayerMe"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 		    
 		    <TextView
         android:id="@+id/lblyourhand"

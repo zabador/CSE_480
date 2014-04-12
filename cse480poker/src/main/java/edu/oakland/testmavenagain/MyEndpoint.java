@@ -348,19 +348,14 @@ public class MyEndpoint {
 
         return regIds;
     }
-    // Reads all previously stored device tokens from the database
     private ArrayList<String> getAllPlayers(String user){
         ArrayList<String> players = new ArrayList<String>();
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             String id = result.getKey().toString();
-            log.severe("id = "+id);
-            log.severe("user = "+user);
-            if (!id.contains(user)) {
-                log.severe(id);
-                players.add(id);
-            }
+            log.severe(id);
+            players.add(id);
         }
 
         return players;

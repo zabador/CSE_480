@@ -14,11 +14,8 @@
     <string name="strBetbtn">Bet</string>
     <string name="lblCurrentBet">"Current Bet: "</string>
     <string name="strFold">Fold</string>
-    <string name="lblPlayer1">Player 1</string>
-    <string name="lblPlayer2">Player 2</string>
-    <string name="lblPlayer3">Player 3</string>
+    <string name="lblNoPlayer">No Player</string>
     <string name="lblNotBlind">Not Blind</string>
-    <string name="lblPlayerMe">Not your turn</string>
     <string name="login">Login</string>
 
 </resources>

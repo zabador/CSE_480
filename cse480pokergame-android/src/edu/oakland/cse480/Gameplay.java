@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.Menu;
@@ -47,7 +48,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	public ImageView card2;
 	public ImageView tblC1, tblC2, tblC3, tblC4, tblC5;
 	public TextView showBet;
-	public TextView nmP1, nmP2, nmP3, nmP4;
+	public TextView nmP1, nmP2, nmP3, nmP4, nmP5, nmP6;
 	public TextView B1, B2, B3, B4;
 	private String betText = "";
 	public int intBet = 0;
@@ -138,11 +139,12 @@ public class Gameplay extends Activity implements OnUpdateFinish {
     public void handlePlayers(Map<String, Object> map, List<String> players, int currentTurn) {
 
         // strip away last part of email address so we can just have a user name
-		String tmpStrPlayerMe = (String)map.get("me");
-        String strPlayerMe = tmpStrPlayerMe.substring(0, tmpStrPlayerMe.indexOf("@"));
 		String strPlayer1 = "";
 		String strPlayer2 = "";
 		String strPlayer3 = "";
+		String strPlayer4 = "";
+		String strPlayer5 = "";
+		String strPlayer6 = "";
 		try {
 			strPlayer1 = players.get(0).substring(players.get(0).indexOf("\"")+1, players.get(0).indexOf("@")); 
         }catch(Exception e) {
@@ -158,8 +160,23 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		}catch(Exception e) {
 			strPlayer3 = "No Player";
 		}
+		try {
+			strPlayer4 = players.get(3).substring(players.get(3).indexOf("\"")+1, players.get(3).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer4 = "No Player";
+		}
+		try {
+			strPlayer5 = players.get(4).substring(players.get(4).indexOf("\"")+1, players.get(4).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer5 = "No Player";
+		}
+		try {
+			strPlayer6 = players.get(5).substring(players.get(5).indexOf("\"")+1, players.get(5).indexOf("@"));
+		}catch(Exception e) {
+			strPlayer6 = "No Player";
+		}
 
-		paintPlayers(currentTurn, 1, 2, strPlayerMe, strPlayer1, strPlayer2, strPlayer3);
+		paintPlayers(currentTurn, 1, 2,strPlayer1, strPlayer2, strPlayer3, strPlayer4, strPlayer5,strPlayer6);
     }
 
     /** 
@@ -248,7 +265,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		myHand(hand1, hand2);
 		tableCards(card1, card2, card3, card4, card5);
 	}
-	public void paintPlayers(int CurrentTurn, int SMblind, int BGblind, String strPlayerMe, String strplayer1, String strplayer2, String strplayer3){
+	public void paintPlayers(int CurrentTurn, int SMblind, int BGblind, String strplayer1, String strplayer2, String strplayer3, String strPlayer4, String strPlayer5, String strPlayer6){
 		nmP1 = (TextView) findViewById(R.id.txtPlayer1);
 		nmP1.setText(strplayer1);
 		
@@ -258,74 +275,92 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		nmP3 = (TextView) findViewById(R.id.txtPlayer3);
 		nmP3.setText(strplayer3);
 		
-		nmP4 = (TextView) findViewById(R.id.txtPlayerMe);
-		nmP4.setText(strPlayerMe);
+		nmP4 = (TextView) findViewById(R.id.txtPlayer4);
+		nmP4.setText(strPlayer4);
+
+		nmP5 = (TextView) findViewById(R.id.txtPlayer5);
+		nmP5.setText(strPlayer5);
+
+		nmP6 = (TextView) findViewById(R.id.txtPlayer6);
+		nmP6.setText(strPlayer6);
 		//need a loop
 		//No loop. Function and call it a few times. 
 		for (int i = 0; i <4; i++){
 		switch(CurrentTurn){
 			case 1:
 				nmP1.setText(strplayer1 + "'s turn");
+                nmP1.setTextColor(Color.RED);
 				break;
 			case 2:
 				nmP2.setText(strplayer2 + "'s turn");
+                nmP2.setTextColor(Color.RED);
 				break;
 			case 3:
 				nmP3.setText(strplayer3 + "'s turn");
+                nmP3.setTextColor(Color.RED);
 				break;
 			case 4:
-				nmP4.setText(strPlayerMe + "'s turn");
+				nmP4.setText(strPlayer4 + "'s turn");
+                nmP4.setTextColor(Color.RED);
+				break;
+			case 5:
+				nmP4.setText(strPlayer5 + "'s turn");
+                nmP5.setTextColor(Color.RED);
+				break;
+			case 6:
+				nmP4.setText(strPlayer6 + "'s turn");
+                nmP6.setTextColor(Color.RED);
 				break;
 		}
 		}
-		B1 = (TextView) findViewById(R.id.lblPlayer1Blind);
-		B2 = (TextView) findViewById(R.id.lblPlayer2Blind);
-		B3 = (TextView) findViewById(R.id.lblPlayer3Blind);
-		B4 = (TextView) findViewById(R.id.lblYourBlind);
-		switch(SMblind){
-		case 1:
-			B1.setText("Small Blind");
-			B2.setText("Not Blind");
-			B3.setText("Not Blind");
-			B4.setText("Not Blind");
-			break;
-		case 2:
-			B2.setText("Small Blind");
-			B3.setText("Not Blind");
-			B4.setText("Not Blind");
-			B1.setText("Not Blind");
-			break;
-		case 3:
-			B3.setText("Small Blind");
-			B2.setText("Not Blind");
-			B1.setText("Not Blind");
-			B4.setText("Not Blind");
-			break;
-		case 4:
-			B4.setText("Small Blind");
-			B2.setText("Not Blind");
-			B3.setText("Not Blind");
-			B1.setText("Not Blind");
-			break;
-		}
-		switch(BGblind){
-		case 1:
-			B1.setText("Big Blind");
-		
-			break;
-		case 2:
-			B2.setText("Big Blind");
-		
-			break;
-		case 3:
-			B3.setText("Big Blind");
-			
-			break;
-		case 4:
-			B4.setText("Big Blind");
-		
-			break;
-		}
+////		B1 = (TextView) findViewById(R.id.lblPlayer1Blind);
+//		B2 = (TextView) findViewById(R.id.lblPlayer2Blind);
+//		B3 = (TextView) findViewById(R.id.lblPlayer3Blind);
+//		B4 = (TextView) findViewById(R.id.lblYourBlind);
+//		switch(SMblind){
+//		case 1:
+//			B1.setText("Small Blind");
+//			B2.setText("Not Blind");
+//			B3.setText("Not Blind");
+//			B4.setText("Not Blind");
+//			break;
+//		case 2:
+//			B2.setText("Small Blind");
+//			B3.setText("Not Blind");
+//			B4.setText("Not Blind");
+//			B1.setText("Not Blind");
+//			break;
+//		case 3:
+//			B3.setText("Small Blind");
+//			B2.setText("Not Blind");
+//			B1.setText("Not Blind");
+//			B4.setText("Not Blind");
+//			break;
+//		case 4:
+//			B4.setText("Small Blind");
+//			B2.setText("Not Blind");
+//			B3.setText("Not Blind");
+//			B1.setText("Not Blind");
+//			break;
+//		}
+//		switch(BGblind){
+//		case 1:
+//			B1.setText("Big Blind");
+//		
+//			break;
+//		case 2:
+//			B2.setText("Big Blind");
+//		
+//			break;
+//		case 3:
+//			B3.setText("Big Blind");
+//			
+//			break;
+//		case 4:
+//			B4.setText("Big Blind");
+//		
+//			break;
+//		}
 		
 	}
 	
