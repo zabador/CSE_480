@@ -136,36 +136,88 @@ public class MyEndpoint {
             "https://www.googleapis.com/auth/userinfo.profile" })
         public MyResult placeBet(MyRequest req, User user) {
 
-            Entity entity = null;
-            Key key = KeyFactory.createKey("Players", user.getEmail());
-            try {
-                //TODO find a better way to update properties
-                entity = datastore.get(key);
-                String regid = (String)entity.getProperty("regid");
-                boolean fold = (Boolean)entity.getProperty("fold");
-                String handCards = (String)entity.getProperty("handCards");
-                int tokens = ((Long)entity.getProperty("tokens")).intValue();
-                int currentPosition = ((Long)entity.getProperty("currentPosition")).intValue();
 
-                // reset everything
-                entity.setProperty("regid", regid);
-                entity.setProperty("currentBet",req.getBet()); // store the bet
-                entity.setProperty("fold", fold);
-                entity.setProperty("handCards", handCards);
-                entity.setProperty("tokens", tokens);
-                entity.setProperty("currentPosition", currentPosition);
+        Entity entity = null;
+        Key key = KeyFactory.createKey("Players", user.getEmail());
+        try {
+            //TODO find a better way to update properties
+            entity = datastore.get(key);
+            String regid = (String) entity.getProperty("regid");
+            boolean fold = (Boolean) entity.getProperty("fold");
+            String handCards = (String) entity.getProperty("handCards");
+            int tokens = ((Long) entity.getProperty("tokens")).intValue();
+            int currentPosition = ((Long) entity.getProperty("currentPosition"))
+                    .intValue();
 
-                datastore.put(entity);
-
-            }catch(EntityNotFoundException e) {
-                e.printStackTrace();
+            
+            int bet = req.getBet();
+            if (bet < 0) { // we will pass a -1 if player folds
+                fold = true;
+            }
+            else {
+                updateGameWithNewBet(req.getBet());
             }
 
+            // reset everything
+            entity.setProperty("regid", regid);
+            entity.setProperty("currentBet", req.getBet()); // store the bet
+            entity.setProperty("fold", fold);
+            entity.setProperty("handCards", handCards);
+            entity.setProperty("tokens", tokens);
+            entity.setProperty("currentPosition", currentPosition);
 
-            gameLogic.placeBet(req.getBet());
-            log.severe("in placebet endpoint");
-            return new MyResult("You placed you bet of "+ req.getBet());
+            datastore.put(entity);
+
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
         }
+
+        gameLogic.placeBet(req.getBet());
+        log.severe("in placebet endpoint");
+        return new MyResult("You placed you bet of " + req.getBet());
+    }
+
+    private void updateGameWithNewBet(int bet) {
+        try {
+            Entity game = null;
+            Key key = KeyFactory.createKey("GameState", "currentGame");
+            game = datastore.get(key);
+            int currentPlayer = ((Long)game.getProperty("currentplayer")).intValue();
+            int numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
+            int highestBet = ((Long)game.getProperty("highestbet")).intValue();
+            int pot = ((Long)game.getProperty("pot")).intValue();
+            boolean firstBets = (Boolean)game.getProperty("firstBets");
+            boolean flopBets = (Boolean)game.getProperty("flopBets");
+            boolean turnBets = (Boolean)game.getProperty("turnBets");
+            boolean riverBets = (Boolean)game.getProperty("riverBets");
+            String turn = (String)game.getProperty("turn");
+            String flop = (String)game.getProperty("flop");
+            String river = (String)game.getProperty("river");
+
+            // add bet to the current highest bet and pot
+            highestBet += bet;
+            pot += bet;
+
+            //resave the game state
+            game.setProperty("currentplayer", currentPlayer);
+            game.setProperty("numberOfPlayers", numberOfPlayers);
+            game.setProperty("highestbet", highestBet);
+            game.setProperty("pot", pot);
+            game.setProperty("firstBets", firstBets);
+            game.setProperty("flopBets", flopBets);
+            game.setProperty("turnBets", turnBets);
+            game.setProperty("riverBets", riverBets);
+            game.setProperty("turn", turn);
+            game.setProperty("flop", flop);
+            game.setProperty("river", river);
+
+            datastore.put(game);
+
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @ApiMethod(name = "getGameState",
                 clientIds = {Ids.WEB_CLIENT_ID, 
@@ -225,7 +277,7 @@ public class MyEndpoint {
             r.setGameState(map);
             log.severe(" map is " + r.getGameState().toString());
 
-			r.setPlayers(getAllPlayers(user.getEmail()));
+            r.setPlayers(getAllPlayers(user.getEmail()));
             
 
             return r;
