@@ -33,6 +33,7 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -55,8 +56,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private GoogleCloudMessaging gcm;
 	private Context context;
 	private OnUpdateFinish onUpdateFinish;
-    private Button btnBet;
-    private Button btnUpdate;
+    private Button btnRaise, btnFold, btnCall;
+    private int toCall;
+    private final int FOLD = -1;
 
 	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
@@ -73,28 +75,15 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		context = this;
 		onUpdateFinish = this;
 
-		// handle the button click for joining game
-		btnBet = (Button) findViewById(R.id.btnBet);
-		btnBet.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm).execute();
-			}
-		});
-
-		final boolean getGameState = true;
-		btnUpdate = (Button) findViewById(R.id.update);
-		btnUpdate.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-                new UpdateAsync(onUpdateFinish, context, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
-			}
-		});
-
 		endpoint = CredentialHack.endpoint;
         credential = CredentialHack.credential;
 
+        btnRaise = (Button)findViewById(R.id.btnRaise);
+        btnCall = (Button)findViewById(R.id.btnCall);
+        btnFold = (Button)findViewById(R.id.btnFold);
         MyResult r = null;
 		try {
-			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, getGameState, credential.getSelectedAccountName()).execute();
+			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
     
 		} catch (Exception ie) {
             Log.e("Erro", ""+ie.getMessage(), ie);
@@ -103,7 +92,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 
 	public void onPlaceBetFinish() {
         
-        btnBet.setVisibility(View.INVISIBLE);
+        btnRaise.setVisibility(View.INVISIBLE);
+        btnCall.setVisibility(View.INVISIBLE);
+        btnFold.setVisibility(View.INVISIBLE);
 		Toast toast = Toast.makeText(this, "you placed a bet", Toast.LENGTH_SHORT);
 		toast.show();
 
@@ -129,7 +120,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		pot = (TextView) findViewById(R.id.lblPot);
 		pot.setText("Pot: " + strPot);
 
-		int toCall = Integer.parseInt((String)map.get("highestBet")) - Integer.parseInt((String)map.get("currentBet"));
+		toCall = Integer.parseInt((String)map.get("highestBet")) - Integer.parseInt((String)map.get("currentBet"));
 		lblToCall = (TextView) findViewById(R.id.lblToCall);
 		lblToCall.setText("To Call: " + Integer.toString(toCall));
 
@@ -139,7 +130,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         // only disply bet button when it is players turn
         int myTurn = Integer.parseInt((String)map.get("currentPosition"));
         if (myTurn == currentTurn) {
-            btnBet.setVisibility(View.VISIBLE);
+            btnRaise.setVisibility(View.VISIBLE);
+            btnCall.setVisibility(View.VISIBLE);
+            btnFold.setVisibility(View.VISIBLE);
         }
 	}
 
@@ -267,6 +260,16 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		getMenuInflater().inflate(R.menu.gameplay, menu);
 		return true;
 	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.update:
+                new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
+                break;
+        }
+        return true;
+    }
 //(Current turn, Not blind, bet amount, player count, cards in hand, cards on table)
 //Cards start with Ace, 2,3,4,5...
 //c is clubs, d is diamonds, h is hearts, s is spades. s2 for ace
@@ -375,7 +378,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		
 	}
 	
-	public void clickedBet(View view){
+	public void clickedRaise(View view){
 		//For now, do nothing. Eventually a prompt box
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Enter your bid");
@@ -407,8 +410,13 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 
 		builder.show();
 	}
+
 	public void clickedFold(View view){
-		//Skye you'll need to enter your fold info in here
+        new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, FOLD).execute();
+	}
+
+	public void clickedCall(View view){
+        new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, toCall).execute();
 	}
 	
 	public void tableCards(String flopCard1, String flopCard2, String flopCard3, String turnCard, String riverCard){

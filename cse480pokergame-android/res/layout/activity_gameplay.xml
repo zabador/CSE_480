@@ -200,19 +200,20 @@
 	        android:text="@string/strFold" />
            
            <Button
-	        android:id="@+id/update"
+	        android:id="@+id/btnCall"
 	        style="?android:attr/buttonBarButtonStyle"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/update" />
+            android:onClick="clickedCall"
+	        android:text="@string/strCall" />
            <Button
-	        android:id="@+id/btnBet"
+	        android:id="@+id/btnRaise"
 	        style="?android:attr/buttonBarButtonStyle"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:onClick="clickedBet"
+	        android:onClick="clickedRaise"
 	        android:visibility="invisible"
-	        android:text="@string/strBetbtn" />
+	        android:text="@string/strRaisebtn" />
            
        </LinearLayout>
        

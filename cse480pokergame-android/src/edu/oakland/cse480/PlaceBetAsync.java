@@ -16,21 +16,19 @@ import java.io.IOException;
 public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 	private Myendpoint endpoint;
 	private GoogleCloudMessaging gcm;
-	private boolean getGameState;
-	private String accountName;
 	private OnUpdateFinish listener;
 	private String regid;
 	private Context context;
     private ProgressDialog dialog;
+    private int bet;
 
-	public PlaceBetAsync(OnUpdateFinish listener, Context context, Myendpoint endpoint, GoogleCloudMessaging gcm) {
+	public PlaceBetAsync(OnUpdateFinish listener, Context context, Myendpoint endpoint, GoogleCloudMessaging gcm, int bet) {
 		this.endpoint = endpoint;
 		this.gcm = gcm;
-		this.getGameState = getGameState;
-		this.accountName = accountName;
 		this.listener = listener;
 		this.context = context;
         this.dialog = new ProgressDialog(context);
+        this.bet = bet;
 	}
 
    /**
@@ -59,7 +57,7 @@ public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 
 		try {
 			MyRequest r = new MyRequest();
-			r.setBet(3);
+			r.setBet(bet);
 			return endpoint.placeBet(r).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
