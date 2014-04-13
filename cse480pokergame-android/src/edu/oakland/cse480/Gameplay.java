@@ -83,6 +83,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 
 		context = this;
 		onUpdateFinish = this;
+        final TextView winner = (TextView)findViewById(R.id.lblWinner);
 
 		endpoint = CredentialHack.endpoint;
         credential = CredentialHack.credential;
@@ -90,9 +91,10 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                winner.setText(intent.getExtras().getString("WINNNER"));
                 updateActivity();
             }
-        }, new IntentFilter("YourTurnToBet"));
+        }, new IntentFilter("UpdateGamePlay"));
 
         btnRaise = (Button)findViewById(R.id.btnRaise);
         btnCall = (Button)findViewById(R.id.btnCall);

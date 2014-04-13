@@ -1,6 +1,8 @@
 package edu.oakland.cse480;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -10,9 +12,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
@@ -21,8 +25,10 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.EditText;
 
@@ -36,7 +42,7 @@ import com.appspot.testmavenagain.myendpoint.Myendpoint;
 import com.appspot.testmavenagain.myendpoint.model.MyRequest;
 import com.appspot.testmavenagain.myendpoint.model.MyResult;
 
-public class GameLobby extends Activity {
+public class GameLobby extends Activity implements OnUpdateFinish {
 	private String testmsg = "";
 	public int intBet = 0;
 	//GCMIntentService notify;
@@ -49,6 +55,13 @@ public class GameLobby extends Activity {
 	private String regid;
 	private Context context;
     static final int REQUEST_ACCOUNT_PICKER = 2;
+    private OnUpdateFinish onUpdateFinish;
+    private ListView listView;
+    private ArrayAdapter<String> adapter;
+    private Button start;
+    private Button join;
+
+    private String[] playersLoggedIn;
 
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
@@ -61,7 +74,10 @@ public class GameLobby extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_lobby);
+        listView = (ListView)findViewById(R.id.list);
 		context = this;
+        onUpdateFinish = this;
+        playersLoggedIn = new String[] {"No Players logged in"};
 
 		credential = GoogleAccountCredential.usingAudience(this,
                 "server:client_id:" + WEB_CLIENT_ID);
@@ -79,7 +95,8 @@ public class GameLobby extends Activity {
         CredentialHack.endpoint = endpoint;
 
         // handle the button click for starting game
-        Button start = (Button) findViewById(R.id.btnStartGame);
+        start = (Button) findViewById(R.id.btnStartGame);
+        start.setVisibility(View.INVISIBLE);
         start.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
 				new DoSomethingAsync(context, endpoint, gcm, true).execute();
@@ -90,7 +107,8 @@ public class GameLobby extends Activity {
         });
 
         // handle the button click for joining game
-        Button join = (Button) findViewById(R.id.btnJoinGame);
+        join = (Button) findViewById(R.id.btnJoinGame);
+        join.setVisibility(View.INVISIBLE);
         join.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(context, Gameplay.class);
@@ -107,12 +125,52 @@ public class GameLobby extends Activity {
 				
             }
         });
+
+        this.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getExtras().getBoolean("GAMESTARTED")) {
+                    join.setVisibility(View.VISIBLE);
+                }
+                updateGameLobby();
+            }
+        }, new IntentFilter("UpdateGameLobby"));
+
+        // define arrayadapter for the listview of players
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, playersLoggedIn);
+        listView.setAdapter(adapter);
 	}
 
 	private void chooseAccount() {
 		startActivityForResult(credential.newChooseAccountIntent(),
 				REQUEST_ACCOUNT_PICKER);
 	}
+
+	public void onPlaceBetFinish() {
+
+    }
+
+	public void onGetGameStateFinish(MyResult result) {
+        Log.i("update ", "adapter");
+        try {
+            List<String> players = result.getPlayers();
+            playersLoggedIn = new String[players.size()];
+            playersLoggedIn = players.toArray(playersLoggedIn);
+            Log.i("player for list = ", ""+ playersLoggedIn[0]);
+            Log.i("me = ",""+credential.getSelectedAccountName());
+            if (playersLoggedIn[0].contains(credential.getSelectedAccountName())) {
+                start.setVisibility(View.VISIBLE);
+            }
+            adapter.notifyDataSetChanged();
+        }catch(Exception e) {
+            Log.e("Exeption ", ""+e.getMessage());
+        }
+    }
+
+    public void updateGameLobby() {
+			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
+    }
 
 	/**
 	 ** Gets the current registration ID for application on GCM service.

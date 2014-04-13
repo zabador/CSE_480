@@ -41,5 +41,11 @@
         android:layout_marginTop="100dp"
         android:background="#00FF00"
         android:text="@string/login" />
+    <ListView
+            android:id="@+id/list"
+            android:layout_below="@+id/Login"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+</ListView>
 
 </RelativeLayout>

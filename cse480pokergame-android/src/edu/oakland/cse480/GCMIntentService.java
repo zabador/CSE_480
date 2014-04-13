@@ -99,18 +99,27 @@ public class GCMIntentService extends IntentService {
     	//separated[2] = separated[2] + ""; //Additional message with "" to negate a null
     	
         boolean showNotification = true;
+
+        Intent intent;
     	
     	switch (msgCode){
     	case 1:
-    		msg = "New Player has joined";
+            msg = "A new player joined the game";
+            showNotification = false;
+            intent = new Intent("UpdateGameLobby");
+            intent.putExtra("GAMESTARTED", false);
+            this.sendBroadcast(intent);
     		break;
     	case 2:
     		msg = "The game has started";
-    		//Send a request to draw two cards
+            intent = new Intent("UpdateGameLobby");
+            intent.putExtra("GAMESTARTED", true);
+            this.sendBroadcast(intent);
     		break;
     	case 3:
     		msg = "It is your turn to bet";
-            Intent intent = new Intent("YourTurnToBet");
+            intent = new Intent("UpdateGamePlay");
+            intent.putExtra("WINNER", "No Previous winner");
             this.sendBroadcast(intent);
     		//Stuff
     		break;
@@ -126,7 +135,10 @@ public class GCMIntentService extends IntentService {
     		//Stuff
     		break;
     	case 7:
-    		msg = "Game over. Winner is " + incomingMsg.substring(1);
+    		msg = "Hand is over. Winner was " + incomingMsg.substring(1);
+            intent = new Intent("UpdateGamePlay");
+            intent.putExtra("WINNER", "Winner of last hand: "+incomingMsg.substring(1));
+            this.sendBroadcast(intent);
     		//Stuff
     		break;
     	default:

@@ -32,6 +32,7 @@ public class MyEndpoint {
     private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private GameLogic gameLogic = new GameLogic();
+    private final String NEWPLAYER = "1";
     Sender sender = new Sender("AIzaSyCS77k51Ezy6oyb0R5bhwh_bDs64fP7aFw");
 
     @ApiMethod(name = "authenticate",
@@ -68,14 +69,17 @@ public class MyEndpoint {
                 regId.setProperty("currentPosition", numberOfPlayers() + 1);
                 log.severe("CALLING");
                 if (user == null) {
+                    sendMessage(new MyRequest(NEWPLAYER));
                     return new MyResult("Login failed");
                 } else {
                     datastore.put(regId);
 
+                    sendMessage(new MyRequest(NEWPLAYER));
                     return new MyResult("Login Successful");
                 }
             }
             else 
+                sendMessage(new MyRequest(NEWPLAYER));
                 return new MyResult("Already logged in");
 
             }

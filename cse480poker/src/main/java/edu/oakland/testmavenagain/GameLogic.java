@@ -246,11 +246,6 @@ public class GameLogic {
                     goToNextRound();
                 }
             }
-            // check if we made it back to the player who first raised
-            else if (!betIsLessThanHigh(currentPlayer, highestBet)) { 
-                currentPlayer = 1;
-                goToNextRound();
-            }
 
             game.setProperty("currentplayer", currentPlayer);
             game.setProperty("numberOfPlayers", numberOfPlayers);
@@ -287,6 +282,7 @@ public class GameLogic {
             riverBets = true; // start turn bets
         } else if (riverBets) {
             riverBets = false; // go to turnBets
+            turnBets = true;
             endGame(pot);
         }
 
@@ -449,6 +445,7 @@ public class GameLogic {
 
             tokens += this.pot;
             this.pot = 0;
+            this.highestBet = 0;
             // reset everything
             entity.setProperty("regid", regid);
             entity.setProperty("currentBet", currentBet); // store the bet
