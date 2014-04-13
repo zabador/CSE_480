@@ -145,23 +145,34 @@ public class MyEndpoint {
             String regid = (String) entity.getProperty("regid");
             boolean fold = (Boolean) entity.getProperty("fold");
             String handCards = (String) entity.getProperty("handCards");
+            int currentBet = ((Long) entity.getProperty("currentBet")).intValue();
             int tokens = ((Long) entity.getProperty("tokens")).intValue();
             int currentPosition = ((Long) entity.getProperty("currentPosition"))
                     .intValue();
 
             
             int bet = req.getBet();
+            int callAmount = 0;
+            
             if (bet < 0) { // we will pass a -1 if player folds
                 fold = true;
             }
+            else if (bet == 0) {
+                callAmount = getAmountToCall(currentBet);
+                currentBet = updateGameWithNewBet(callAmount, false); 
+                tokens -= callAmount;
+            } 
             else {
                 tokens -= req.getBet();
-                updateGameWithNewBet(req.getBet());
+                currentBet = updateGameWithNewBet(req.getBet(), true);
             }
+
+            log.severe("call amount = "+Integer.toString(callAmount));
+            log.severe("currentBet = "+Integer.toString(currentBet));
 
             // reset everything
             entity.setProperty("regid", regid);
-            entity.setProperty("currentBet", req.getBet()); // store the bet
+            entity.setProperty("currentBet", currentBet); // store the bet
             entity.setProperty("fold", fold);
             entity.setProperty("handCards", handCards);
             entity.setProperty("tokens", tokens);
@@ -173,19 +184,33 @@ public class MyEndpoint {
             e.printStackTrace();
         }
 
-        gameLogic.placeBet(req.getBet());
+        gameLogic.placeBet();
         log.severe("in placebet endpoint");
         return new MyResult("You placed you bet of " + req.getBet());
     }
 
-    private void updateGameWithNewBet(int bet) {
+    private int getAmountToCall(int currentBet) {
+        int highestBet = 0;
+        try {
+            Entity game = null;
+            Key key = KeyFactory.createKey("GameState", "currentGame");
+            game = datastore.get(key);
+            highestBet = ((Long)game.getProperty("highestbet")).intValue();
+        }catch(EntityNotFoundException e) {
+            log.severe("Entity now found");
+        }
+        return highestBet - currentBet;
+    }
+
+    private int updateGameWithNewBet(int bet, boolean updateHighestBet) {
+        int highestBet = bet;
         try {
             Entity game = null;
             Key key = KeyFactory.createKey("GameState", "currentGame");
             game = datastore.get(key);
             int currentPlayer = ((Long)game.getProperty("currentplayer")).intValue();
             int numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
-            int highestBet = ((Long)game.getProperty("highestbet")).intValue();
+            highestBet = ((Long)game.getProperty("highestbet")).intValue();
             int pot = ((Long)game.getProperty("pot")).intValue();
             boolean firstBets = (Boolean)game.getProperty("firstBets");
             boolean flopBets = (Boolean)game.getProperty("flopBets");
@@ -196,8 +221,13 @@ public class MyEndpoint {
             String river = (String)game.getProperty("river");
 
             // add bet to the current highest bet and pot
-            highestBet += bet;
+             
+            if (updateHighestBet) {
+                highestBet += bet;
+            }
             pot += bet;
+
+            log.severe("high amount = "+Integer.toString(highestBet));
 
 
             //resave the game state
@@ -219,6 +249,7 @@ public class MyEndpoint {
             e.printStackTrace();
         }
 
+        return highestBet;
     }
 
     @ApiMethod(name = "getGameState",

@@ -88,7 +88,7 @@ public class GCMIntentService extends IntentService {
         Log.i("incomingMsg = ", ""+incomingMsg);
         int msgCode;
         try {
-            msgCode = Integer.parseInt(incomingMsg);
+            msgCode = Character.getNumericValue(incomingMsg.charAt(0));
         }catch(Exception e) {
             msgCode = 0;
         }
@@ -124,7 +124,7 @@ public class GCMIntentService extends IntentService {
     		//Stuff
     		break;
     	case 7:
-    		msg = "Game over. Winner is ";
+    		msg = "Game over. Winner is " + incomingMsg.substring(1);
     		//Stuff
     		break;
     	default:

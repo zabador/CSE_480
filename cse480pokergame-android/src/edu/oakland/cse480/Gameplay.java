@@ -64,6 +64,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
     private Button btnRaise, btnFold, btnCall;
     private int toCall;
     private final int FOLD = -1;
+    private final int CALL = 0;
     private int intTokens;
 
 	// defind constants
@@ -101,8 +102,8 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         btnRaise.setVisibility(View.INVISIBLE);
         btnCall.setVisibility(View.INVISIBLE);
         btnFold.setVisibility(View.INVISIBLE);
-		Toast toast = Toast.makeText(this, "you placed a bet", Toast.LENGTH_SHORT);
-		toast.show();
+
+        new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
 
 	}
 
@@ -123,6 +124,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		currentBet.setText("Current bet: " + strHighestBet);
 
 		String strPot = (String)map.get("pot");
+        int intPot = Integer.parseInt(strPot);
 		pot = (TextView) findViewById(R.id.lblPot);
 		pot.setText("Pot: " + strPot);
 
@@ -139,7 +141,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         if (myTurn == currentTurn) {
             if(intTokens > 0) {
                 btnRaise.setVisibility(View.VISIBLE);
-                btnCall.setVisibility(View.VISIBLE);
+                if(intPot > 0) {
+                    btnCall.setVisibility(View.VISIBLE);
+                }
             }
             btnFold.setVisibility(View.VISIBLE);
         }
@@ -308,33 +312,37 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		nmP6.setText(strPlayer6);
 		//need a loop
 		//No loop. Function and call it a few times. 
-		for (int i = 0; i <4; i++){
 		switch(CurrentTurn){
 			case 1:
 				nmP1.setText(strplayer1 + "'s turn");
                 nmP1.setTextColor(Color.RED);
+                nmP6.setTextColor(Color.BLACK);
 				break;
 			case 2:
 				nmP2.setText(strplayer2 + "'s turn");
                 nmP2.setTextColor(Color.RED);
+                nmP1.setTextColor(Color.BLACK);
 				break;
 			case 3:
 				nmP3.setText(strplayer3 + "'s turn");
                 nmP3.setTextColor(Color.RED);
+                nmP2.setTextColor(Color.BLACK);
 				break;
 			case 4:
 				nmP4.setText(strPlayer4 + "'s turn");
                 nmP4.setTextColor(Color.RED);
+                nmP3.setTextColor(Color.BLACK);
 				break;
 			case 5:
 				nmP4.setText(strPlayer5 + "'s turn");
                 nmP5.setTextColor(Color.RED);
+                nmP4.setTextColor(Color.BLACK);
 				break;
 			case 6:
 				nmP4.setText(strPlayer6 + "'s turn");
                 nmP6.setTextColor(Color.RED);
+                nmP5.setTextColor(Color.BLACK);
 				break;
-		}
 		}
 	}
 	
@@ -368,7 +376,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	}
 
 	public void clickedCall(View view){
-        new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, toCall).execute();
+        new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, CALL).execute();
 	}
 	
 	public void tableCards(String flopCard1, String flopCard2, String flopCard3, String turnCard, String riverCard){
