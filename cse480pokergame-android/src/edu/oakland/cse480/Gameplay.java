@@ -137,8 +137,10 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         // only disply bet button when it is players turn
         int myTurn = Integer.parseInt((String)map.get("currentPosition"));
         if (myTurn == currentTurn) {
-            btnRaise.setVisibility(View.VISIBLE);
-            btnCall.setVisibility(View.VISIBLE);
+            if(intTokens > 0) {
+                btnRaise.setVisibility(View.VISIBLE);
+                btnCall.setVisibility(View.VISIBLE);
+            }
             btnFold.setVisibility(View.VISIBLE);
         }
 	}
