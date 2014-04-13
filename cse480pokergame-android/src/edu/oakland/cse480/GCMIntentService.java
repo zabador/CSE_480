@@ -110,6 +110,8 @@ public class GCMIntentService extends IntentService {
     		break;
     	case 3:
     		msg = "It is your turn to bet";
+            Intent intent = new Intent("YourTurnToBet");
+            this.sendBroadcast(intent);
     		//Stuff
     		break;
     	case 4:

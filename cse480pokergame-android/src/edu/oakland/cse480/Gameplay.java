@@ -23,9 +23,11 @@ import android.os.Bundle;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
@@ -85,6 +87,13 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		endpoint = CredentialHack.endpoint;
         credential = CredentialHack.credential;
 
+        this.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateActivity();
+            }
+        }, new IntentFilter("YourTurnToBet"));
+
         btnRaise = (Button)findViewById(R.id.btnRaise);
         btnCall = (Button)findViewById(R.id.btnCall);
         btnFold = (Button)findViewById(R.id.btnFold);
@@ -106,6 +115,15 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
 
 	}
+
+    /** 
+     * This will get called when the listener hears 
+     * a broadcasted messge
+     */
+    public void updateActivity() {
+        Log.i("it made it to the update","");
+        new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
+    }
 
 	public void onGetGameStateFinish(MyResult result) {
 
