@@ -155,6 +155,7 @@ public class MyEndpoint {
                 fold = true;
             }
             else {
+                tokens -= req.getBet();
                 updateGameWithNewBet(req.getBet());
             }
 
@@ -197,6 +198,7 @@ public class MyEndpoint {
             // add bet to the current highest bet and pot
             highestBet += bet;
             pot += bet;
+
 
             //resave the game state
             game.setProperty("currentplayer", currentPlayer);
