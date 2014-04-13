@@ -20,7 +20,7 @@ public class GameLogic {
     private static Deck deck;
 
     private final String PLACEBET = "3";
-    private final String GAMEOVER = "7";
+    private final String HANDOVER = "7";
 
     // game state variable
     private int currentPlayer;
@@ -405,15 +405,20 @@ public class GameLogic {
         for (int i=0; i<n-1; i++){
             int compare = HandEvaluator.compareHands(winning_hand, bestHand[i+1]);
             if (compare == 1){
+                if (checkIfCurrentPlayerFolded(i+1)) {
+                    winner = i+1;
+                    winning_hand = bestHand[i+1];
+                }
             }
 
             if (compare == 2){
-                winner = i+1;
-                winning_hand = bestHand[i+1];
+                if(!checkIfCurrentPlayerFolded(i+1)) {
+                    winner = i+1;
+                    winning_hand = bestHand[i+1];
+                }
             }
 
             if (compare == 0){
-                tiedWinner = i+1;
             }
         }
 
@@ -425,7 +430,7 @@ public class GameLogic {
         populateCards(false);
         givePotToWinner(getCurrentPlayer(winner + 1));
         MyEndpoint endpoint = new MyEndpoint();
-        endpoint.sendMessage(new MyRequest(GAMEOVER + strWinner));
+        endpoint.sendMessage(new MyRequest(HANDOVER + strWinner));
     }
 
     private void givePotToWinner(String winner) {
