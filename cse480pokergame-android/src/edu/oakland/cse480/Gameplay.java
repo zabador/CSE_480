@@ -36,9 +36,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -59,6 +64,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
     private Button btnRaise, btnFold, btnCall;
     private int toCall;
     private final int FOLD = -1;
+    private int intTokens;
 
 	// defind constants
 	public static final String EXTRA_MESSAGE = "message";
@@ -125,6 +131,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		lblToCall.setText("To Call: " + Integer.toString(toCall));
 
 		String strTokens = (String)map.get("tokens");
+        intTokens = Integer.parseInt(strTokens);
 		tokens = (TextView) findViewById(R.id.lblTokens);
 		tokens.setText("Tokens: " + strTokens);
         // only disply bet button when it is players turn
@@ -327,89 +334,32 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 				break;
 		}
 		}
-////		B1 = (TextView) findViewById(R.id.lblPlayer1Blind);
-//		B2 = (TextView) findViewById(R.id.lblPlayer2Blind);
-//		B3 = (TextView) findViewById(R.id.lblPlayer3Blind);
-//		B4 = (TextView) findViewById(R.id.lblYourBlind);
-//		switch(SMblind){
-//		case 1:
-//			B1.setText("Small Blind");
-//			B2.setText("Not Blind");
-//			B3.setText("Not Blind");
-//			B4.setText("Not Blind");
-//			break;
-//		case 2:
-//			B2.setText("Small Blind");
-//			B3.setText("Not Blind");
-//			B4.setText("Not Blind");
-//			B1.setText("Not Blind");
-//			break;
-//		case 3:
-//			B3.setText("Small Blind");
-//			B2.setText("Not Blind");
-//			B1.setText("Not Blind");
-//			B4.setText("Not Blind");
-//			break;
-//		case 4:
-//			B4.setText("Small Blind");
-//			B2.setText("Not Blind");
-//			B3.setText("Not Blind");
-//			B1.setText("Not Blind");
-//			break;
-//		}
-//		switch(BGblind){
-//		case 1:
-//			B1.setText("Big Blind");
-//		
-//			break;
-//		case 2:
-//			B2.setText("Big Blind");
-//		
-//			break;
-//		case 3:
-//			B3.setText("Big Blind");
-//			
-//			break;
-//		case 4:
-//			B4.setText("Big Blind");
-//		
-//			break;
-//		}
-		
 	}
 	
 	public void clickedRaise(View view){
-		//For now, do nothing. Eventually a prompt box
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Enter your bid");
+        final String[] betAmounts = new String[intTokens/5];
+        for (int i=0; i < intTokens/5; i++) {
+            betAmounts[i] = Integer.toString((i+1)*5);
+        }
 
-		// Set up the input
-		final EditText input = new EditText(this);
-		// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-		input.setInputType(InputType.TYPE_CLASS_NUMBER);
-		builder.setView(input);
+        final ArrayAdapter<String> adp = new ArrayAdapter<String>(context,
+                            R.layout.spinner, betAmounts);
+        final Spinner spinner = new Spinner(context);
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 30));
+        spinner.setAdapter(adp);
 
-		// Set up the buttons
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { 
-		    @Override
-		    public void onClick(DialogInterface dialog, int which) {
-		        betText = input.getText().toString();
-		        try {
-		            intBet = Integer.parseInt(betText);
-		        } catch(NumberFormatException nfe) {
-
-		        } 
-		    }
-		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialog, int which) {
-		        dialog.cancel();
-		    }
-		});
-
-		builder.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(spinner);
+        builder.setPositiveButton("BET", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                int betAmount = Integer.parseInt(spinner.getSelectedItem().toString());
+                new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, betAmount).execute();
+            }
+        });
+        builder.create().show();
 	}
+
+
 
 	public void clickedFold(View view){
         new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, FOLD).execute();
