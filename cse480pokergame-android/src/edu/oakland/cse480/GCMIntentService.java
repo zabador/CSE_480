@@ -141,6 +141,13 @@ public class GCMIntentService extends IntentService {
             this.sendBroadcast(intent);
     		//Stuff
     		break;
+    	case 8:
+    		msg = "Game is over. Winner was " + incomingMsg.substring(1);
+            intent = new Intent("UpdateGamePlay");
+            intent.putExtra("WINNER", "Winner of Game: "+incomingMsg.substring(1));
+            this.sendBroadcast(intent);
+    		//Stuff
+    		break;
     	default:
     		msg = "Switch case isn't working";
             showNotification = false;

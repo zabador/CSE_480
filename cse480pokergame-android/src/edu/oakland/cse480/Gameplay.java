@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -63,7 +64,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private GoogleCloudMessaging gcm;
 	private Context context;
 	private OnUpdateFinish onUpdateFinish;
-    private Button btnRaise, btnFold, btnCall;
+    private Button btnRaise, btnFold, btnCall, btnNextGame;
     private int toCall;
     private final int FOLD = -1;
     private final int CALL = 0;
@@ -91,14 +92,25 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                winner.setText(intent.getExtras().getString("WINNNER"));
+                winner.setText(intent.getStringExtra("WINNNER"));
+            
                 updateActivity();
             }
         }, new IntentFilter("UpdateGamePlay"));
 
+        this.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                btnNextGame.setVisibility(View.VISIBLE);
+                updateActivity();
+            
+            }
+        }, new IntentFilter("UpdateGameLobby"));
+
         btnRaise = (Button)findViewById(R.id.btnRaise);
         btnCall = (Button)findViewById(R.id.btnCall);
         btnFold = (Button)findViewById(R.id.btnFold);
+        btnNextGame = (Button)findViewById(R.id.btnNextGame);
         MyResult r = null;
 		try {
 			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
@@ -159,13 +171,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         // only disply bet button when it is players turn
         int myTurn = Integer.parseInt((String)map.get("currentPosition"));
         if (myTurn == currentTurn) {
-            if(intTokens > 0) {
                 btnRaise.setVisibility(View.VISIBLE);
-                if(intPot > 0) {
-                    btnCall.setVisibility(View.VISIBLE);
-                }
-            }
-            btnFold.setVisibility(View.VISIBLE);
+                btnCall.setVisibility(View.VISIBLE);
+                btnFold.setVisibility(View.VISIBLE);
         }
 	}
 
@@ -389,14 +397,16 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         builder.create().show();
 	}
 
-
-
 	public void clickedFold(View view){
         new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, FOLD).execute();
 	}
 
 	public void clickedCall(View view){
         new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, CALL).execute();
+	}
+
+	public void clickedNextGame(View view) {
+		new DoSomethingAsync(context, endpoint, false);
 	}
 	
 	public void tableCards(String flopCard1, String flopCard2, String flopCard3, String turnCard, String riverCard){
@@ -431,5 +441,51 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 		card2.setImageResource(resCard2);
     }
 
+	private class DoSomethingAsync extends AsyncTask<Void, Void, MyResult> {
+		private Myendpoint endpoint;
+        private ProgressDialog dialog;
+        private boolean newGame;
+
+		public DoSomethingAsync(Context mContext, Myendpoint endpoint, boolean newGame) {
+			this.endpoint = endpoint;
+            this.newGame = newGame;
+            this.dialog = new ProgressDialog(mContext);
+		}
+
+        /**
+         *
+         * Displays the progress dialog box
+         *
+         */
+        @Override
+        protected void onPreExecute()
+        {
+            dialog.setMessage("Starting Next Game");
+            dialog.show();
+        } 
+
+        @Override
+        protected MyResult doInBackground(Void... params) {
+
+            try {
+                MyRequest r = new MyRequest();
+                r.setFirstRound(newGame);
+                return endpoint.startGame(r).execute();
+			} catch (IOException e) {
+				e.printStackTrace();
+				MyResult r = new MyResult();
+				Log.e("error = ", e.getMessage(), e);
+				r.setValue("EXCEPTION");
+				return r;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(MyResult r) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+		}
+	}
 }
 

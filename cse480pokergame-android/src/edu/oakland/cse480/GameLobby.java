@@ -382,7 +382,9 @@ public class GameLobby extends Activity implements OnUpdateFinish {
                     return endpoint.authenticate(r).execute();
                 }
                 else {
-                    return endpoint.startGame().execute();
+                    MyRequest r = new MyRequest();
+                    r.setFirstRound(true);
+                    return endpoint.startGame(r).execute();
 
                 }
 			} catch (IOException e) {

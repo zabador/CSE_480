@@ -105,9 +105,9 @@ public class MyEndpoint {
         scopes = {
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile" })
-        public MyResult startGame() {
+        public MyResult startGame(MyRequest req) {
 
-            MyRequest req = new MyRequest("start");
+            req.setGCMmessage("start");
             Message message = new Message.Builder().addData("message", req.getGCMmessage()).build();
 
             try { List<String> devices = getAllRegIds();
@@ -122,7 +122,7 @@ public class MyEndpoint {
                 log.severe("IOException " + e.getCause());
             }
 
-            gameLogic.startGame();
+            gameLogic.startGame(req.isFirstRound());
             sendMessage(new MyRequest("2"));
             return new MyResult("Game Started");
         }

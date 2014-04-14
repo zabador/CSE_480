@@ -8,6 +8,7 @@ public class MyRequest {
     private String GCMmessage;
     private int bet;
     private String user;
+    private boolean firstRound;
 
     public MyRequest() {}
 
@@ -33,6 +34,21 @@ public class MyRequest {
     public void setUser(String user) {
         this.user = user;
     }
+
+    /**
+     * @return the firstRound
+     */
+    public boolean isFirstRound() {
+        return firstRound;
+    }
+
+    /**
+     * @param firstRound the firstRound to set
+     */
+    public void setFirstRound(boolean firstRound) {
+        this.firstRound = firstRound;
+    }
+
     /**
      * @return the regId
      */

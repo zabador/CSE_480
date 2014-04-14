@@ -25,7 +25,7 @@ then
 	echo 
 	echo "***************************************************************************"
 	echo "***************************************************************************"
-	cp target/endpoints-client-libs/myendpoint/target/myendpoint-v1-1.17.0-rc-SNAPSHOT.jar ../cse480pokergame-android/libs && 
+	cp target/endpoints-client-libs/myendpoint/target/myendpoint-v1-1.18.0-rc-SNAPSHOT.jar ../cse480pokergame-android/libs && 
 	echo "***************************************************************************"
 	echo "***************************************************************************"
 	echo 
@@ -70,7 +70,7 @@ then
 	echo 
 	echo "***************************************************************************"
 	echo "***************************************************************************"
-	cp target/endpoints-client-libs/myendpoint/target/myendpoint-v1-1.17.0-rc-SNAPSHOT.jar ../cse480pokergame-android/libs && 
+	cp target/endpoints-client-libs/myendpoint/target/myendpoint-v1-1.18.0-rc-SNAPSHOT.jar ../cse480pokergame-android/libs && 
 	echo "***************************************************************************"
 	echo "***************************************************************************"
 	echo 
