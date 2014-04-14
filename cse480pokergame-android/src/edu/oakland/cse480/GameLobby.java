@@ -162,10 +162,18 @@ public class GameLobby extends Activity implements OnUpdateFinish {
             if (playersLoggedIn[0].contains(credential.getSelectedAccountName())) {
                 start.setVisibility(View.VISIBLE);
             }
-            adapter.notifyDataSetChanged();
+            else {
+                start.setVisibility(View.INVISIBLE);
+            }
         }catch(Exception e) {
             Log.e("Exeption ", ""+e.getMessage());
         }
+
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, playersLoggedIn);
+        listView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
     }
 
     public void updateGameLobby() {
@@ -349,6 +357,7 @@ public class GameLobby extends Activity implements OnUpdateFinish {
 			this.gcm = gcm;
             this.startGame = startGame;
             this.dialog = new ProgressDialog(mContext);
+            this.mContext = mContext;
 		}
 
         /**
@@ -401,6 +410,7 @@ public class GameLobby extends Activity implements OnUpdateFinish {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
+            GameLobby.this.updateGameLobby();
 		}
 	}
 }

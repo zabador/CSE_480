@@ -324,6 +324,12 @@ public class GameLogic {
 
             String[] handCards = strHandCards.trim().split(" ");
             log.severe("first card is " +handCards[0]);
+            log.severe("second card is " +handCards[1]);
+            log.severe("third card is " +flopCards[0]);
+            log.severe("forth card is " +flopCards[1]);
+            log.severe("fifth card is " +flopCards[2]);
+            log.severe("six card is " +strTurn);
+            log.severe("seven card is " +strRiver);
             playerHand[i] = new Hand();
             playerHand[i].addCard(new Card(handCards[0]));
             playerHand[i].addCard(new Card(handCards[1]));
@@ -334,34 +340,25 @@ public class GameLogic {
             playerHand[i].addCard(new Card(strRiver));
         }
 
-        HandEvaluator[] handEval = new HandEvaluator[n];
-        for(int i=0; i<n; i++){
-            handEval[i] = new HandEvaluator();
-        }
 
-        //Finding the best hand for each player
-        Hand[] bestHand = new Hand[n];
-        for (int i=0; i<n; i++){
-            bestHand[i] = handEval[i].getBest5CardHand(playerHand[i]);
-        }
 
         Hand winning_hand = new Hand();
-        winning_hand = bestHand[0];
+        winning_hand = playerHand[0];
         int winner = 0;
         int tiedWinner = 0;
         for (int i=0; i<n-1; i++){
-            int compare = HandEvaluator.compareHands(winning_hand, bestHand[i+1]);
+            int compare = HandEvaluator.compareHands(winning_hand, playerHand[i+1]);
             if (compare == 1){
                 if (checkIfCurrentPlayerFolded(i+1)) {
                     winner = i+1;
-                    winning_hand = bestHand[i+1];
+                    winning_hand = playerHand[i+1];
                 }
             }
 
             if (compare == 2){
                 if(!checkIfCurrentPlayerFolded(i+1)) {
                     winner = i+1;
-                    winning_hand = bestHand[i+1];
+                    winning_hand = playerHand[i+1];
                 }
             }
 

@@ -196,6 +196,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="clickedFold"
+	        android:visibility="invisible"
 	        android:text="@string/strFold" />
            
            <Button
@@ -204,6 +205,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
             android:onClick="clickedCall"
+	        android:visibility="invisible"
 	        android:text="@string/strCall" />
            <Button
 	        android:id="@+id/btnRaise"
@@ -211,14 +213,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="clickedRaise"
-	        android:visibility="invisible"
-	        android:text="@string/strRaisebtn" />
-           <Button
-	        android:id="@+id/btnNextGame"
-	        style="?android:attr/buttonBarButtonStyle"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="clickedNextGame"
 	        android:visibility="invisible"
 	        android:text="@string/strRaisebtn" />
            
@@ -237,7 +231,6 @@
                 android:id="@+id/lblWinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No winner from last round"
                 android:layout_marginLeft="40dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>

@@ -105,7 +105,6 @@ public class GCMIntentService extends IntentService {
     	switch (msgCode){
     	case 1:
             msg = "A new player joined the game";
-            showNotification = false;
             intent = new Intent("UpdateGameLobby");
             intent.putExtra("GAMESTARTED", false);
             this.sendBroadcast(intent);

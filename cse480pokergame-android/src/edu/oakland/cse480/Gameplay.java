@@ -64,7 +64,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 	private GoogleCloudMessaging gcm;
 	private Context context;
 	private OnUpdateFinish onUpdateFinish;
-    private Button btnRaise, btnFold, btnCall, btnNextGame;
+    private Button btnRaise, btnFold, btnCall;
     private int toCall;
     private final int FOLD = -1;
     private final int CALL = 0;
@@ -101,7 +101,6 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                btnNextGame.setVisibility(View.VISIBLE);
                 updateActivity();
             
             }
@@ -110,7 +109,6 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         btnRaise = (Button)findViewById(R.id.btnRaise);
         btnCall = (Button)findViewById(R.id.btnCall);
         btnFold = (Button)findViewById(R.id.btnFold);
-        btnNextGame = (Button)findViewById(R.id.btnNextGame);
         MyResult r = null;
 		try {
 			new UpdateAsync(onUpdateFinish, context, endpoint, gcm, credential.getSelectedAccountName()).execute();
@@ -345,30 +343,58 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 				nmP1.setText(strplayer1 + "'s turn");
                 nmP1.setTextColor(Color.RED);
                 nmP6.setTextColor(Color.BLACK);
+                nmP5.setTextColor(Color.BLACK);
+                nmP4.setTextColor(Color.BLACK);
+                nmP3.setTextColor(Color.BLACK);
+                nmP2.setTextColor(Color.BLACK);
 				break;
 			case 2:
 				nmP2.setText(strplayer2 + "'s turn");
                 nmP2.setTextColor(Color.RED);
+                nmP6.setTextColor(Color.BLACK);
+                nmP5.setTextColor(Color.BLACK);
+                nmP4.setTextColor(Color.BLACK);
+                nmP3.setTextColor(Color.BLACK);
                 nmP1.setTextColor(Color.BLACK);
 				break;
 			case 3:
 				nmP3.setText(strplayer3 + "'s turn");
                 nmP3.setTextColor(Color.RED);
+                nmP6.setTextColor(Color.BLACK);
+                nmP5.setTextColor(Color.BLACK);
+                nmP4.setTextColor(Color.BLACK);
+                nmP2.setTextColor(Color.BLACK);
+                nmP1.setTextColor(Color.BLACK);
                 nmP2.setTextColor(Color.BLACK);
 				break;
 			case 4:
 				nmP4.setText(strPlayer4 + "'s turn");
                 nmP4.setTextColor(Color.RED);
+                nmP6.setTextColor(Color.BLACK);
+                nmP5.setTextColor(Color.BLACK);
+                nmP2.setTextColor(Color.BLACK);
+                nmP3.setTextColor(Color.BLACK);
+                nmP1.setTextColor(Color.BLACK);
                 nmP3.setTextColor(Color.BLACK);
 				break;
 			case 5:
 				nmP4.setText(strPlayer5 + "'s turn");
                 nmP5.setTextColor(Color.RED);
+                nmP6.setTextColor(Color.BLACK);
+                nmP2.setTextColor(Color.BLACK);
+                nmP4.setTextColor(Color.BLACK);
+                nmP3.setTextColor(Color.BLACK);
+                nmP1.setTextColor(Color.BLACK);
                 nmP4.setTextColor(Color.BLACK);
 				break;
 			case 6:
 				nmP4.setText(strPlayer6 + "'s turn");
                 nmP6.setTextColor(Color.RED);
+                nmP2.setTextColor(Color.BLACK);
+                nmP5.setTextColor(Color.BLACK);
+                nmP4.setTextColor(Color.BLACK);
+                nmP3.setTextColor(Color.BLACK);
+                nmP1.setTextColor(Color.BLACK);
                 nmP5.setTextColor(Color.BLACK);
 				break;
 		}
@@ -405,9 +431,6 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         new PlaceBetAsync(onUpdateFinish, context, endpoint, gcm, CALL).execute();
 	}
 
-	public void clickedNextGame(View view) {
-		new DoSomethingAsync(context, endpoint, false);
-	}
 	
 	public void tableCards(String flopCard1, String flopCard2, String flopCard3, String turnCard, String riverCard){
 		int tblCard1 = getResources().getIdentifier(flopCard1, "drawable", getPackageName());
