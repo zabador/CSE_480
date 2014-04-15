@@ -158,8 +158,9 @@ public class GCMIntentService extends IntentService {
             mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    new Intent(this, Gameplay.class), 0);
+            Intent newIntent = new Intent(this,Gameplay.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,newIntent , 0);
 
             NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
