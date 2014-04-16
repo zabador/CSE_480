@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.text.InputType;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -157,9 +158,13 @@ public class GameLobby extends Activity implements OnUpdateFinish {
             List<String> players = result.getPlayers();
             playersLoggedIn = new String[players.size()];
             playersLoggedIn = players.toArray(playersLoggedIn);
+            for(int i = 0; i < playersLoggedIn.length; i++) {
+                playersLoggedIn[i] = playersLoggedIn[i].substring(playersLoggedIn[i].indexOf("\"")+1, playersLoggedIn[i].indexOf("@")); 
+                Log.i("player = ",""+playersLoggedIn[i]);
+            }
             Log.i("player for list = ", ""+ playersLoggedIn[0]);
             Log.i("me = ",""+credential.getSelectedAccountName());
-            if (playersLoggedIn[0].contains(credential.getSelectedAccountName())) {
+            if (credential.getSelectedAccountName().contains(playersLoggedIn[0])) {
                 start.setVisibility(View.VISIBLE);
             }
             else {
@@ -254,9 +259,29 @@ public class GameLobby extends Activity implements OnUpdateFinish {
 		getMenuInflater().inflate(R.menu.game_lobby, menu);
 		return true;
 	}
-	
-	public void joinGame (View view){
-	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch(item.getItemId())
+        {
+            case R.id.update:
+                updateGameLobby();
+                break;
+            case R.id.joinGame:
+                intent = new Intent(context, Gameplay.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case R.id.startGame:
+				new DoSomethingAsync(context, endpoint, gcm, true).execute();
+                intent = new Intent(context, Gameplay.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
 	
 	public void testNotification(View view){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

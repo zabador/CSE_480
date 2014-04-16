@@ -92,6 +92,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.i("WINNER = ", ""+ intent.getStringExtra("WINNER"));
                 winner.setText(intent.getStringExtra("WINNNER"));
             
                 updateActivity();
@@ -169,13 +170,29 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         // only disply bet button when it is players turn
         int myTurn = Integer.parseInt((String)map.get("currentPosition"));
         if (myTurn == currentTurn) {
-                btnRaise.setVisibility(View.VISIBLE);
                 btnCall.setVisibility(View.VISIBLE);
-                btnFold.setVisibility(View.VISIBLE);
-        }
+			if (iAmTheOnlyOneNotFolded(players)) {
+				btnFold.setVisibility(View.INVISIBLE);
+                btnRaise.setVisibility(View.INVISIBLE);
+			} else {
+				btnFold.setVisibility(View.VISIBLE);
+                btnRaise.setVisibility(View.VISIBLE);
+			}
+		}
 	}
 
-    /** 
+	private boolean iAmTheOnlyOneNotFolded(List<String> players) {
+        int count = 0;
+        for(String p : players) {
+            if (p.contains("Player Folded")){
+                count++;
+            }
+        }
+        // if every one folded but me pass back true
+        return count == players.size() - 1 ? true : false;
+	}
+
+	/**
      * Method will handle players information returning from 
      * server so it can be painted to screen
      */
