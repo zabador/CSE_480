@@ -127,18 +127,19 @@ public class GameLogic {
 
         pullPlayerState(user);
 
-            if(tokens <= 0) {
-                this.handCards = "ic_launcher ic_laucher";
-            }
-            else {
-                this.handCards = handCards;
-            }
 
             // put fold back to false on new game
             fold = false;
 
             if(newGame) {
                 tokens = 1000;
+            }
+
+            if(tokens <= 0) {
+                this.handCards = "ic_launcher ic_laucher";
+            }
+            else {
+                this.handCards = handCards;
             }
 
             savePlayerState();
@@ -260,6 +261,9 @@ public class GameLogic {
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             if (tmpCurrentPlayer == ((Long)result.getProperty("currentPosition")).intValue()) {
+                log.severe("checking if player folded " + Integer.toString(tmpCurrentPlayer));
+                log.severe("player to be checked if folded " +Integer.toString(tmpCurrentPlayer));
+                log.severe("retrun value of fold " +(String.valueOf((Boolean)result.getProperty("fold"))));
                 return (Boolean)result.getProperty("fold");
             }
         }
@@ -336,22 +340,31 @@ public class GameLogic {
         for (int i=0; i<n-1; i++){
             int compare = HandEvaluator.compareHands(winning_hand, playerHand[i+1]);
             if (compare == 1){
+                log.severe("1 won hand");
                 if (checkIfCurrentPlayerFolded(i)) {
+                    log.severe("1 folded");
                     winner = i+1;
                     winning_hand = playerHand[i+1];
                 }
             }
 
             if (compare == 2){
+                log.severe("2 won hand");
                 if(!checkIfCurrentPlayerFolded(i+1)) {
+                    log.severe("2 not folded");
                     winner = i+1;
                     winning_hand = playerHand[i+1];
+                }
+                else {
+                    winner = i;
+                    winning_hand = playerHand[i];
                 }
             }
 
             if (compare == 0){
             }
         }
+        log.severe("winning hand = "+winning_hand.toString());
 
         String strWinner = getCurrentPlayer(winner + 1);
 
@@ -377,11 +390,13 @@ public class GameLogic {
     private void givePotToWinner(String winner) {
 
         pullGameState();
+        pullPlayerState(winner);
 
         tokens += this.pot;
         this.pot = 0;
         this.highestBet = 0;
 
+        savePlayerState();
         saveGameState();
     }
 

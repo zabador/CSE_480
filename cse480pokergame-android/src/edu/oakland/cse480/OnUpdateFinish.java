@@ -6,4 +6,5 @@ public interface OnUpdateFinish {
 	
 	void onPlaceBetFinish();
 	void onGetGameStateFinish(MyResult result);
+    void updateGameLobby();
 }

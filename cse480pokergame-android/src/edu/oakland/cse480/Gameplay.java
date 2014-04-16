@@ -92,8 +92,7 @@ public class Gameplay extends Activity implements OnUpdateFinish {
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.i("WINNER = ", ""+ intent.getStringExtra("WINNER"));
-                winner.setText(intent.getStringExtra("WINNNER"));
+                winner.setText(intent.getStringExtra("WINNER"));
             
                 updateActivity();
             }
@@ -526,6 +525,12 @@ public class Gameplay extends Activity implements OnUpdateFinish {
                 dialog.dismiss();
             }
 		}
+	}
+
+	@Override
+	public void updateGameLobby() {
+		// TODO Auto-generated method stub
+
 	}
 }
 

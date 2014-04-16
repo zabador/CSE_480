@@ -65,7 +65,7 @@ public class MyEndpoint {
                 regId.setProperty("currentBet", 0);
                 regId.setProperty("fold", false);
                 regId.setProperty("handCards", "");
-                regId.setProperty("tokens", 100);
+                regId.setProperty("tokens", 1000);
                 regId.setProperty("currentPosition", numberOfPlayers() + 1);
                 log.severe("CALLING");
                 if (user == null) {

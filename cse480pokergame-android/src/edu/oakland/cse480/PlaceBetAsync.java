@@ -45,15 +45,6 @@ public class PlaceBetAsync extends AsyncTask<Void, Void, MyResult> {
 
 	@Override
 	protected MyResult doInBackground(Void... params) {
-		try {
-			if (gcm == null) {
-				gcm = GoogleCloudMessaging.getInstance(context);
-			}
-			regid = gcm.register("699958132030");
-			Log.d("regid from app = ", regid);
-
-		} catch (IOException ex) {
-		}
 
 		try {
 			MyRequest r = new MyRequest();
