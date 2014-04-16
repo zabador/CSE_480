@@ -35,12 +35,20 @@ public class GameLogic {
     private String strFlop;
     private String strRiver;
 
-    private ArrayList<String> playersList;
+    private Entity game = null;
+    private Entity player = null;
+
     private Hand flop;
     private Hand turn;
     private Hand river;
 
-    private String handcards;
+    // player variables
+    private ArrayList<String> playersList;
+    private String regid;
+    private boolean fold;
+    private int tokens;
+
+    private String handCards;
 
     public String test() {
         return "hope this works";
@@ -53,28 +61,33 @@ public class GameLogic {
     public void startGame(boolean firstRound) {
 
         populateCards(firstRound);
+        setUpNewGame();
 
-        Entity game = new Entity("GameState", "currentGame");
-        game.setProperty("currentplayer", 1);
-        game.setProperty("highestbet", 0);
-        game.setProperty("pot", 0);
-        game.setProperty("numberOfPlayers", playersList.size());
-        game.setProperty("firstBets", true);
-        game.setProperty("flopBets", false);
-        game.setProperty("turnBets", false);
-        game.setProperty("riverBets", false);
-        game.setProperty("flop", flop.toString());
-        game.setProperty("turn", turn.toString());
-        game.setProperty("river", river.toString());
-        datastore.put(game);
-
+        saveGameState();
 
         MyEndpoint endpoint = new MyEndpoint();
         endpoint.sendNotification(new MyRequest(getCurrentPlayer(1), PLACEBET));
 
     }
 
+    private void setUpNewGame() {
+
+        game = new Entity("GameState", "currentGame");
+        currentPlayer = 1;
+        numberOfPlayers = playersList.size();
+        highestBet = 0;
+        pot = 0;
+        firstBets = true;
+        flopBets = false;
+        turnBets = false;
+        riverBets = false;
+        strTurn = turn.toString();
+        strFlop = flop.toString();
+        strRiver = river.toString();
+    }
+
     private void populateCards(boolean newGame) {
+
         
         Deck deck = new Deck();
         deck.shuffle();
@@ -102,6 +115,7 @@ public class GameLogic {
             playerHand[i].addCard(deck.deal());
             updateHandOfCards(playersList.get(i), playerHand[i].toString(), newGame);
         }
+
     }
 
     /**
@@ -110,99 +124,72 @@ public class GameLogic {
      *
      */
     public void updateHandOfCards(String user, String handCards, boolean newGame) {
-        //TODO find a better way to update properties
-        try {
-            Entity entity = null;
-            Key key = KeyFactory.createKey("Players", user);
-            entity = datastore.get(key);
-            String regid = (String)entity.getProperty("regid");
-            boolean fold = (Boolean)entity.getProperty("fold");
-            int tokens = ((Long)entity.getProperty("tokens")).intValue();
 
-            // reset everything
-            entity.setProperty("regid", regid);
-            entity.setProperty("currentBet", 0); // reset current bet for new hand
-            entity.setProperty("fold", fold);
-            entity.setProperty("handCards", handCards);
-            if(newGame) {
-                tokens = 100;
+        pullPlayerState(user);
+
+            if(tokens <= 0) {
+                this.handCards = "ic_launcher ic_laucher";
             }
-            entity.setProperty("tokens", tokens);
+            else {
+                this.handCards = handCards;
+            }
 
-            datastore.put(entity);
-        }catch(EntityNotFoundException e) {
-            e.printStackTrace();
-        }
+            // put fold back to false on new game
+            fold = false;
+
+            if(newGame) {
+                tokens = 1000;
+            }
+
+            savePlayerState();
     }
 
     public void placeBet() {
         // pull out currentgame state to resave after updateing
+        pullGameState();
         boolean keepBetting = true;
-        try {
-            Entity game = null;
-            Key key = KeyFactory.createKey("GameState", "currentGame");
-            game = datastore.get(key);
-            currentPlayer = ((Long)game.getProperty("currentplayer")).intValue();
-            numberOfPlayers = ((Long)game.getProperty("numberOfPlayers")).intValue();
-            highestBet = ((Long)game.getProperty("highestbet")).intValue();
-            pot = ((Long)game.getProperty("pot")).intValue();
-            firstBets = (Boolean)game.getProperty("firstBets");
-            flopBets = (Boolean)game.getProperty("flopBets");
-            turnBets = (Boolean)game.getProperty("turnBets");
-            riverBets = (Boolean)game.getProperty("riverBets");
-            strTurn = (String)game.getProperty("turn");
-            strFlop = (String)game.getProperty("flop");
-            strRiver = (String)game.getProperty("river");
 
+        currentPlayer++;
+
+        //increment currentPlayer if currenPlayer has folded
+        while (checkIfCurrentPlayerFolded(currentPlayer)) {
             currentPlayer++;
-
-            //increment currentPlayer if currenPlayer has folded
-            while(checkIfCurrentPlayerFolded(currentPlayer)) {
-                currentPlayer++;
-            }
-            
-            while(!checkIfCurrentPlayerHasEnoughTokens(currentPlayer, highestBet)) {
-                currentPlayer++;
-            }
-
-            // go to next round of betting
-            if (currentPlayer > numberOfPlayers) {
-                currentPlayer = 1; // set back to one for next round of betting
-
-                while(!checkIfCurrentPlayerHasEnoughTokens(currentPlayer, highestBet)) {
-                    currentPlayer++;
-                }
-
-                if (!betIsLessThanHigh(currentPlayer, highestBet)) {
-                    keepBetting = goToNextRound();
-                }
-            }
-
-            game.setProperty("currentplayer", currentPlayer);
-            game.setProperty("numberOfPlayers", numberOfPlayers);
-            game.setProperty("highestbet", highestBet);
-            game.setProperty("pot", pot);
-            game.setProperty("firstBets", firstBets);
-            game.setProperty("flopBets", flopBets);
-            game.setProperty("turnBets", turnBets);
-            game.setProperty("riverBets", riverBets);
-            game.setProperty("turn", strTurn);
-            game.setProperty("flop", strFlop);
-            game.setProperty("river", strRiver);
-
-            datastore.put(game);
-
-            MyEndpoint endpoint = new MyEndpoint();
-            
-            if(keepBetting) {
-                endpoint.sendNotification(new MyRequest(
-                            getCurrentPlayer(currentPlayer), PLACEBET)); // save the update data
-            }
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
         }
 
+        while (!checkIfCurrentPlayerHasEnoughTokens(currentPlayer,
+                    highestBet)) {
+            currentPlayer++;
+        }
+
+        // go to next round of betting
+        if (currentPlayer > numberOfPlayers) {
+            currentPlayer = 1; // set back to one for next round of betting
+
+            while (!checkIfCurrentPlayerHasEnoughTokens(currentPlayer,
+                        highestBet)) {
+                currentPlayer++;
+            }
+
+            while (checkIfCurrentPlayerFolded(currentPlayer)) {
+                currentPlayer++;
+            }
+
+            if (!betIsLessThanHigh(currentPlayer, highestBet)) {
+                keepBetting = goToNextRound();
+            }
+        }
+
+        saveGameState();
+
+        MyEndpoint endpoint = new MyEndpoint();
+
+        if (keepBetting) {
+            endpoint.sendNotification(new MyRequest(
+                        getCurrentPlayer(currentPlayer), PLACEBET)); // save the update data
+        }
     }
+
+
 
     private boolean goToNextRound() {
         if (firstBets) {
@@ -232,47 +219,47 @@ public class GameLogic {
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()) {
-            boolean fold = (Boolean)result.getProperty("fold");
-            handcards = (String)result.getProperty("handCards");
-            String regid = (String)result.getProperty("regid");
-            int currentPosition = ((Long)result.getProperty("currentPosition")).intValue();
-            int tokens = ((Long)result.getProperty("tokens")).intValue();
+            boolean tmpFold = (Boolean)result.getProperty("fold");
+            String tmpHandCards = (String)result.getProperty("handCards");
+            String tmpRegid = (String)result.getProperty("regid");
+            int tmpCurrentPosition = ((Long)result.getProperty("currentPosition")).intValue();
+            int tmpTokens = ((Long)result.getProperty("tokens")).intValue();
 
-            if (currentPosition == pq.countEntities(FetchOptions.Builder.withLimit(100))) {
-                currentPosition = 1;
+            if (tmpCurrentPosition == pq.countEntities(FetchOptions.Builder.withLimit(100))) {
+                tmpCurrentPosition = 1;
             }
             else {
-                currentPosition++;
+                tmpCurrentPosition++;
             }
 
             result.setProperty("currentBet", 0);
-            result.setProperty("fold", fold);
-            result.setProperty("handCards", handcards);
-            result.setProperty("regid", regid);
-            result.setProperty("tokens", tokens);
-            result.setProperty("currentPosition", currentPosition);
+            result.setProperty("fold", tmpFold);
+            result.setProperty("handCards", tmpHandCards);
+            result.setProperty("regid", tmpRegid);
+            result.setProperty("tokens", tmpTokens);
+            result.setProperty("currentPosition", tmpCurrentPosition);
             datastore.put(result);
         }
     }
 
-    private String getCurrentPlayer(int currentPlayer) {
-        String player = null;
+    private String getCurrentPlayer(int tmpCurrentPlayer) {
+        String strPlayer = null;
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             String id = (String) result.getKey().getName();
-            if (currentPlayer == ((Long)result.getProperty("currentPosition")).intValue()) {
-                player = id;
+            if (tmpCurrentPlayer == ((Long)result.getProperty("currentPosition")).intValue()) {
+                strPlayer = id;
             }
         }
-        return player;
+        return strPlayer;
     }
 
-    private boolean checkIfCurrentPlayerFolded(int currentPlayer) {
+    private boolean checkIfCurrentPlayerFolded(int tmpCurrentPlayer) {
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
-            if (currentPlayer == ((Long)result.getProperty("currentPosition")).intValue()) {
+            if (tmpCurrentPlayer == ((Long)result.getProperty("currentPosition")).intValue()) {
                 return (Boolean)result.getProperty("fold");
             }
         }
@@ -295,7 +282,7 @@ public class GameLogic {
         return true;
     }
 
-    
+
     // Reads all previously stored device tokens from the database
     private ArrayList<String> getAllPlayers(){
         ArrayList<String> players = new ArrayList<String>();
@@ -349,7 +336,7 @@ public class GameLogic {
         for (int i=0; i<n-1; i++){
             int compare = HandEvaluator.compareHands(winning_hand, playerHand[i+1]);
             if (compare == 1){
-                if (checkIfCurrentPlayerFolded(i+1)) {
+                if (checkIfCurrentPlayerFolded(i)) {
                     winner = i+1;
                     winning_hand = playerHand[i+1];
                 }
@@ -366,10 +353,7 @@ public class GameLogic {
             }
         }
 
-        log.severe("winning hand is "+ winning_hand.toString());
-        log.severe("winner is "+Integer.toString(winner + 1 ));
         String strWinner = getCurrentPlayer(winner + 1);
-        log.severe("winner is "+strWinner);
 
         givePotToWinner(getCurrentPlayer(winner + 1));
         updatePlayerPositions();
@@ -377,12 +361,13 @@ public class GameLogic {
         MyEndpoint endpoint = new MyEndpoint();
 
         if(checkIfGameIsOver()) {
-            firstBets = false;
+            firstBets = true;
             endpoint.sendMessage(new MyRequest(GAMEOVER + strWinner));
-            
+
         }
         else {
             populateCards(false);
+            setUpNewGame();
             firstBets = true;
             endpoint.sendMessage(new MyRequest(HANDOVER + strWinner));
         }
@@ -390,37 +375,14 @@ public class GameLogic {
     }
 
     private void givePotToWinner(String winner) {
-        Entity entity = null;
-        Key key = KeyFactory.createKey("Players", winner);
-        try {
-            //TODO find a better way to update properties
-            entity = datastore.get(key);
-            String regid = (String) entity.getProperty("regid");
-            boolean fold = (Boolean) entity.getProperty("fold");
-            String handCards = (String) entity.getProperty("handCards");
-            int currentBet = ((Long) entity.getProperty("currentBet")).intValue();
-            int tokens = ((Long) entity.getProperty("tokens")).intValue();
-            int currentPosition = ((Long) entity.getProperty("currentPosition"))
-                    .intValue();
 
-            tokens += this.pot;
-            this.pot = 0;
-            this.highestBet = 0;
-            // reset everything
-            entity.setProperty("regid", regid);
-            entity.setProperty("currentBet", currentBet); // store the bet
-            entity.setProperty("fold", fold);
-            entity.setProperty("handCards", handCards);
-            entity.setProperty("tokens", tokens);
-            entity.setProperty("currentPosition", currentPosition);
+        pullGameState();
 
-            datastore.put(entity);
+        tokens += this.pot;
+        this.pot = 0;
+        this.highestBet = 0;
 
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
+        saveGameState();
     }
 
     public boolean betIsLessThanHigh(int currentPlayer, int highestBet) {
@@ -444,19 +406,83 @@ public class GameLogic {
     }
 
     private boolean checkIfGameIsOver() {
-        String player = null;
         ArrayList<String> playersStillIn = new ArrayList<String>();
         Query gaeQuery = new Query("Players");
         PreparedQuery pq = datastore.prepare(gaeQuery);
         for (Entity result : pq.asIterable()){
             String id = (String) result.getKey().getName();
             if (((Long)result.getProperty("tokens")).intValue() > 0) {
-                 playersStillIn.add(id);
+                playersStillIn.add(id);
             }
             if (playersStillIn.size() > 1) {
                 return false;
             }
         }
         return true;
+    }
+
+    private void saveGameState() {
+
+        game.setProperty("currentplayer", currentPlayer);
+        game.setProperty("numberOfPlayers", numberOfPlayers);
+        game.setProperty("highestbet", highestBet);
+        game.setProperty("pot", pot);
+        game.setProperty("firstBets", firstBets);
+        game.setProperty("flopBets", flopBets);
+        game.setProperty("turnBets", turnBets);
+        game.setProperty("riverBets", riverBets);
+        game.setProperty("turn", strTurn);
+        game.setProperty("flop", strFlop);
+        game.setProperty("river", strRiver);
+
+        datastore.put(game);
+    }
+
+    private void pullGameState() {
+        try {
+            game = null;
+            Key key = KeyFactory.createKey("GameState", "currentGame");
+            game = datastore.get(key);
+            currentPlayer = ((Long) game.getProperty("currentplayer"))
+                .intValue();
+            numberOfPlayers = ((Long) game.getProperty("numberOfPlayers"))
+                .intValue();
+            highestBet = ((Long) game.getProperty("highestbet")).intValue();
+            pot = ((Long) game.getProperty("pot")).intValue();
+            firstBets = (Boolean) game.getProperty("firstBets");
+            flopBets = (Boolean) game.getProperty("flopBets");
+            turnBets = (Boolean) game.getProperty("turnBets");
+            riverBets = (Boolean) game.getProperty("riverBets");
+            strTurn = (String) game.getProperty("turn");
+            strFlop = (String) game.getProperty("flop");
+            strRiver = (String) game.getProperty("river");
+        }catch(EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void pullPlayerState(String user) {
+        try {
+            player = null;
+            Key key = KeyFactory.createKey("Players", user);
+            player = datastore.get(key);
+            regid = (String)player.getProperty("regid");
+            fold = (Boolean)player.getProperty("fold");
+            tokens = ((Long)player.getProperty("tokens")).intValue();
+        }catch(EntityNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void savePlayerState() {
+            // reset everything
+            player.setProperty("regid", regid);
+            player.setProperty("currentBet", 0); // reset current bet for new hand
+            player.setProperty("fold", fold);
+            player.setProperty("handCards", handCards);
+            player.setProperty("tokens", tokens);
+
+            datastore.put(player);
     }
 }

@@ -397,7 +397,10 @@ public class MyEndpoint {
             for (Entity result : pq.asIterable()){
                 String id = result.getKey().toString();
                 if (((Long)(result.getProperty("currentPosition"))).intValue() == i) {
-                    players.add(id);
+                    if((Boolean)result.getProperty("fold"))
+                        players.add("Player Folded");
+                    else
+                        players.add(id);
                     break;
                 }
             }
