@@ -165,6 +165,9 @@ public class MyEndpoint {
                 callAmount = getAmountToCall(currentBet);
                 currentBet = updateGameWithNewBet(callAmount, false); 
                 tokens -= callAmount;
+                if (tokens < 0) {
+                    tokens = 0;
+                }
             } 
             else {
                 tokens -= req.getBet();

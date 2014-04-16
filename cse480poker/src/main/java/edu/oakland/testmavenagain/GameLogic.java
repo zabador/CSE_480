@@ -178,6 +178,7 @@ public class GameLogic {
             if (!betIsLessThanHigh(currentPlayer, highestBet)) {
                 keepBetting = goToNextRound();
             }
+
         }
 
         saveGameState();

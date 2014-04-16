@@ -177,6 +177,9 @@ public class Gameplay extends Activity implements OnUpdateFinish {
 				btnFold.setVisibility(View.VISIBLE);
                 btnRaise.setVisibility(View.VISIBLE);
 			}
+            if(intTokens <= 0) {
+                btnRaise.setVisibility(View.VISIBLE);
+            }
 		}
 	}
 
