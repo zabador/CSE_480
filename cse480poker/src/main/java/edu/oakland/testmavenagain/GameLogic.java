@@ -341,7 +341,7 @@ public class GameLogic {
             int compare = HandEvaluator.compareHands(winning_hand, playerHand[i+1]);
             if (compare == 1){
                 log.severe("1 won hand");
-                if (checkIfCurrentPlayerFolded(i)) {
+                if (checkIfCurrentPlayerFolded(i+1)) {
                     log.severe("1 folded");
                     winner = i+1;
                     winning_hand = playerHand[i+1];
@@ -350,7 +350,7 @@ public class GameLogic {
 
             if (compare == 2){
                 log.severe("2 won hand");
-                if(!checkIfCurrentPlayerFolded(i+1)) {
+                if(!checkIfCurrentPlayerFolded(i+2)) {
                     log.severe("2 not folded");
                     winner = i+1;
                     winning_hand = playerHand[i+1];

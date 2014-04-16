@@ -118,7 +118,6 @@ public class GCMIntentService extends IntentService {
     	case 3:
     		msg = "It is your turn to bet";
             intent = new Intent("UpdateGamePlay");
-            intent.putExtra("WINNER", "No Previous winner");
             this.sendBroadcast(intent);
     		//Stuff
     		break;
