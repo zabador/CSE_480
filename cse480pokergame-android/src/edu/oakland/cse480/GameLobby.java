@@ -100,7 +100,7 @@ public class GameLobby extends Activity implements OnUpdateFinish {
         start.setVisibility(View.INVISIBLE);
         start.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-				new DoSomethingAsync(context, endpoint, gcm, true).execute();
+				new DoSomethingAsync(context, onUpdateFinish, endpoint, gcm, true).execute();
                 Intent intent = new Intent(context, Gameplay.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
@@ -224,7 +224,7 @@ public class GameLobby extends Activity implements OnUpdateFinish {
 					if (accountName != null) {
 						credential.setSelectedAccountName(accountName);
                         Log.d("account name is ", credential.getSelectedAccountName());
-                        new DoSomethingAsync(this, endpoint, gcm, false).execute();
+                        new DoSomethingAsync(this, onUpdateFinish, endpoint, gcm, false).execute();
 						// User is authorized.
 					}
 				}
@@ -274,7 +274,7 @@ public class GameLobby extends Activity implements OnUpdateFinish {
                 startActivity(intent);
                 break;
             case R.id.startGame:
-				new DoSomethingAsync(context, endpoint, gcm, true).execute();
+				new DoSomethingAsync(context, onUpdateFinish, endpoint, gcm, true).execute();
                 intent = new Intent(context, Gameplay.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
@@ -370,19 +370,21 @@ public class GameLobby extends Activity implements OnUpdateFinish {
     }
 
 
-	private class DoSomethingAsync extends AsyncTask<Void, Void, MyResult> {
+	private class DoSomethingAsync extends AsyncTask<Void, Void, String> {
 		private Myendpoint endpoint;
 		private GoogleCloudMessaging gcm;
         private boolean startGame;
         private ProgressDialog dialog;
         private Context mContext;
+        private OnUpdateFinish onUpdateFinish;
 
-		public DoSomethingAsync(Context mContext, Myendpoint endpoint, GoogleCloudMessaging gcm, boolean startGame) {
+		public DoSomethingAsync(Context mContext, OnUpdateFinish onUpdateFinish, Myendpoint endpoint, GoogleCloudMessaging gcm, boolean startGame) {
 			this.endpoint = endpoint;
 			this.gcm = gcm;
             this.startGame = startGame;
             this.dialog = new ProgressDialog(mContext);
             this.mContext = mContext;
+            this.onUpdateFinish = onUpdateFinish;
 		}
 
         /**
@@ -398,46 +400,28 @@ public class GameLobby extends Activity implements OnUpdateFinish {
         } 
 
         @Override
-        protected MyResult doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             try {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
-                regid = gcm.register("699958132030");
-                Log.d("regid from app = ", regid);
+                return regid = gcm.register("699958132030");
 
             } catch (IOException ex) {
+                return null;
             }
-
-            try {
-                if (!startGame) {
-                    MyRequest r = new MyRequest();
-                    r.setRegId(regid);
-                    return endpoint.authenticate(r).execute();
-                }
-                else {
-                    MyRequest r = new MyRequest();
-                    r.setFirstRound(true);
-                    return endpoint.startGame(r).execute();
-
-                }
-			} catch (IOException e) {
-				e.printStackTrace();
-				MyResult r = new MyResult();
-				Log.e("error = ", e.getMessage(), e);
-				r.setValue("EXCEPTION");
-				return r;
-			}
 		}
 
 		@Override
-		protected void onPostExecute(MyResult r) {
+		protected void onPostExecute(String regId) {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            GameLobby.this.updateGameLobby();
+            Log.d("regid = ",""+regId);
+            new GetCredentialAsync(mContext, onUpdateFinish, endpoint, gcm, regId, startGame).execute();;
 		}
 	}
 }
+
 
 
