@@ -163,15 +163,15 @@ public class MyEndpoint {
             }
             else if (bet == 0) {
                 callAmount = getAmountToCall(currentBet);
-                currentBet = updateGameWithNewBet(callAmount, false); 
+                currentBet = updateGameWithNewBet(callAmount, tokens, false); 
                 tokens -= callAmount;
                 if (tokens < 0) {
                     tokens = 0;
                 }
             } 
             else {
+                currentBet = updateGameWithNewBet(req.getBet(), tokens, true);
                 tokens -= req.getBet();
-                currentBet = updateGameWithNewBet(req.getBet(), true);
             }
 
             log.severe("call amount = "+Integer.toString(callAmount));
@@ -209,7 +209,7 @@ public class MyEndpoint {
         return highestBet - currentBet;
     }
 
-    private int updateGameWithNewBet(int bet, boolean updateHighestBet) {
+    private int updateGameWithNewBet(int bet, int tokens, boolean updateHighestBet) {
         int highestBet = bet;
         try {
             Entity game = null;
@@ -232,7 +232,12 @@ public class MyEndpoint {
             if (updateHighestBet) {
                 highestBet += bet;
             }
-            pot += bet;
+			if(bet > tokens) { // only increment pot by how many tokens player has left it they do not have enough
+				pot += tokens;
+			}
+			else {
+				pot += bet;
+			}
 
             log.severe("high amount = "+Integer.toString(highestBet));
 

@@ -98,27 +98,28 @@ public class GameLogic {
         // initialize the flop to store in the datastore
         flop = new Hand();
         for (int i = 0; i < 3; i++) {
-            flop.addCard(deck.deal());
-        }
+			flop.addCard(deck.deal());
+		}
 
-        // initialize the turn to store in the datastore
-        turn = new Hand();
-        turn.addCard(deck.deal());
+		// initialize the turn to store in the datastore
+		turn = new Hand();
+		turn.addCard(deck.deal());
 
-        // initialize the river to store in the datastore
-        river = new Hand();
-        river.addCard(deck.deal());
+		// initialize the river to store in the datastore
+		river = new Hand();
+		river.addCard(deck.deal());
 
-        for (int i = 0; i < playersList.size(); i++) {
-            playerHand[i] = new Hand();
-            playerHand[i].addCard(deck.deal());
-            playerHand[i].addCard(deck.deal());
-            updateHandOfCards(playersList.get(i), playerHand[i].toString(), newGame);
-        }
+		for (int i = 0; i < playersList.size(); i++) {
+			playerHand[i] = new Hand();
+			playerHand[i].addCard(deck.deal());
+			playerHand[i].addCard(deck.deal());
+			updateHandOfCards(playersList.get(i), playerHand[i].toString(),
+					newGame);
+		}
 
-    }
+	}
 
-    /**
+	/**
      *  Method will save the newly created
      *  hand cards for the user
      *
@@ -166,10 +167,10 @@ public class GameLogic {
         if (currentPlayer > numberOfPlayers) {
             currentPlayer = 1; // set back to one for next round of betting
 
-            while (!checkIfCurrentPlayerHasEnoughTokens(currentPlayer,
-                        highestBet)) {
-                currentPlayer++;
-            }
+  //          while (!checkIfCurrentPlayerHasEnoughTokens(currentPlayer,
+  //                      highestBet)) {
+  //              currentPlayer++;
+  //          }
 
             while (checkIfCurrentPlayerFolded(currentPlayer)) {
                 currentPlayer++;
@@ -376,14 +377,14 @@ public class GameLogic {
 
         if(checkIfGameIsOver()) {
             firstBets = true;
-            endpoint.sendMessage(new MyRequest(GAMEOVER + strWinner));
+            endpoint.sendMessage(new MyRequest(GAMEOVER + strWinner + " with "+winning_hand));
 
         }
         else {
             populateCards(false);
             setUpNewGame();
             firstBets = true;
-            endpoint.sendMessage(new MyRequest(HANDOVER + strWinner));
+            endpoint.sendMessage(new MyRequest(HANDOVER + strWinner + " with "+winning_hand));
         }
 
     }
